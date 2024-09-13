@@ -1,0 +1,5 @@
+app:  
+  identifier: "xlsNinja"  
+  repository: "https://github.com/coffinsp/lostools"  
+  directory: "/home/coffinxp/lostools"  
+  executable: "xlsNinja.py"
