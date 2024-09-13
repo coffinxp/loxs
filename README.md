@@ -11,9 +11,9 @@
 - **XSS Scanner**: Identify Cross-Site Scripting vulnerabilities.
 - **Multi-threaded scanning**: Improved performance through multi-threading.
 - **Customizable payloads**: Adjust payloads to suit specific targets.
-- **Success criteria**: Modify success detection criteria for specific use cases..
+- **Success criteria**: Modify success detection criteria for specific use cases.
 - **User-friendly command-line interface**: Simple and intuitive.
-- **Save vulnerable URLs**: Option to save the results of vulnerable URLs to a file..
+- **Save vulnerable URLs**: Option to save the results of vulnerable URLs to a file.
 
 ## Requirements
 
@@ -41,10 +41,10 @@ To run the script, use the following command:
 ```bash
 python lostsec.py
 ```
-to update the tool to latest version
+to update the tool to the latest version
 ```bash
-just edit the config.yml file with your tool directoty
-after press 5 and exit from tool run the tool again it will run with updated version
+just edit the config.yml file with your tool directory
+after pressing 5 and exiting from the tool run the tool again it will run with an updated version
 ```
 ## Input Information:
 
@@ -64,7 +64,7 @@ Lostxlso allows for various levels of customization to fit your specific testing
 
 ## Disclaimer
 
-Lostxlso is intended for educational and ethical hacking purposes only. It should only be used to test systems you own or have explicit permission to test. Unauthorized use on third-party websites or systems without consent is illegal and unethical.
+Lostxlso is intended for educational and ethical hacking purposes only. It should only be used to test systems you own or have explicit permission to test. Unauthorized use of third-party websites or systems without consent is illegal and unethical.
 
 ## Contributors
 - AnonKryptiQuz
