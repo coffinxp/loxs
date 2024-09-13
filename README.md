@@ -1,7 +1,7 @@
 ![Screenshot (396)](https://github.com/user-attachments/assets/c5da3434-b021-4767-b470-6f3bf48fbb8a)
-# XlsNinja: Multi-Vulnerability Scanner
+# Lostxlso: Multi-Vulnerability Scanner
 
-**XlsNinja** is a powerful and versatile multi-vulnerability scanner designed to detect various web application vulnerabilities, including Local File Inclusion (LFI), Open Redirects (OR), SQL Injection (SQLi), and Cross-Site Scripting (XSS). This tool was created by **AnonKryptiQuz**, **Coffinxp**, **Hexsh1dow**, and **Naho**.
+**Lostxlso** is a powerful and versatile multi-vulnerability scanner designed to detect various web application vulnerabilities, including Local File Inclusion (LFI), Open Redirects (OR), SQL Injection (SQLi), and Cross-Site Scripting (XSS). This tool was created by **AnonKryptiQuz**, **Coffinxp**, **Hexsh1dow**, and **Naho**.
 
 ## Features
 
@@ -39,7 +39,7 @@ cd lostools
 To run the script, use the following command:
 
 ```bash
-python xlsNinja.py
+python lostsec.py
 ```
 to update the tool to latest version
 ```bash
@@ -57,14 +57,14 @@ After the scan completes, you will have the option to save the URLs found to be 
 
 ## Customization
 
-XlsNinja allows for various levels of customization to fit your specific testing needs:
+Lostxlso allows for various levels of customization to fit your specific testing needs:
 - **Custom Payloads:**: Create or modify payload files to suit specific vulnerability types or applications. Payloads should be tailored to the vulnerability being tested.
 - **Success Criteria:**: Adjust the success criteria patterns in the tool to identify successful exploitation attempts more accurately. For example, you can modify the tool to check for specific error messages or unique responses.
 - **Concurrent Threads:**:  Control the number of concurrent threads used during the scan to optimize performance based on system resources.
 
 ## Disclaimer
 
-XlsNinja is intended for educational and ethical hacking purposes only. It should only be used to test systems you own or have explicit permission to test. Unauthorized use on third-party websites or systems without consent is illegal and unethical.
+Lostxlso is intended for educational and ethical hacking purposes only. It should only be used to test systems you own or have explicit permission to test. Unauthorized use on third-party websites or systems without consent is illegal and unethical.
 
 ## Contributors
 - AnonKryptiQuz
