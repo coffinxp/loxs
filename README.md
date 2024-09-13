@@ -1,4 +1,4 @@
-![Screenshot (328)](https://github.com/user-attachments/assets/788bbddf-02ad-49c7-89e7-e1979a8c92ab)
+![Screenshot (396)](https://github.com/user-attachments/assets/c5da3434-b021-4767-b470-6f3bf48fbb8a)
 # XlsNinja: Multi-Vulnerability Scanner
 
 **XlsNinja** is a powerful and versatile multi-vulnerability scanner designed to detect various web application vulnerabilities, including Local File Inclusion (LFI), Open Redirects (OR), SQL Injection (SQLi), and Cross-Site Scripting (XSS). This tool was created by **AnonKryptiQuz**, **Coffinxp**, **Hexsh1dow**, and **Naho**.
@@ -41,6 +41,11 @@ To run the script, use the following command:
 ```bash
 python xlsNinja.py
 ```
+to update the tool to latest version
+```bash
+just edit the config.yml file with your tool directoty
+after that press exit and run the tool again it will run with updated version
+```
 ## Input Information:
 
 - **Input URL/File**: You can provide a single URL or an input file containing a list of URLs to scan.
@@ -66,4 +71,3 @@ XlsNinja is intended for educational and ethical hacking purposes only. It shoul
 - Coffinxp
 - Hexsh1dow
 - Naho
-
