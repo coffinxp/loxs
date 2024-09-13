@@ -44,7 +44,7 @@ python lostsec.py
 to update the tool to latest version
 ```bash
 just edit the config.yml file with your tool directoty
-after that press exit and run the tool again it will run with updated version
+after press 5 and exit from tool run the tool again it will run with updated version
 ```
 ## Input Information:
 
