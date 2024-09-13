@@ -4,8 +4,39 @@ from curses import panel
 import random
 import re
 from wsgiref import headers
-
-
+import os
+import sys
+import subprocess
+from colorama import Fore, Style, init
+from time import sleep
+from rich import print as rich_print
+from rich.panel import Panel
+from rich.table import Table
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, quote
+from bs4 import BeautifulSoup
+import time
+import requests
+import urllib3
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import PathCompleter
+import logging
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+import argparse
+import aiohttp
+from urllib.parse import urlsplit, urlunsplit
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+from lostsec import check_and_install_packages, clear_screen
+from selenium.common.exceptions import TimeoutException
+from git import Repo
+import yaml
+import shutil
 
 class Color:
     BLUE = '\033[94m'
@@ -22,29 +53,6 @@ class Color:
     UNITALIC = '\033[23m'
 
 try:
-    import os
-    import sys
-    import subprocess
-    from colorama import Fore, Style, init
-    from time import sleep
-    from rich import print as rich_print
-    from rich.panel import Panel
-    from rich.table import Table
-    import concurrent.futures
-    from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
-    from bs4 import BeautifulSoup
-    import time
-    import requests
-    import urllib3
-    from prompt_toolkit import prompt
-    from prompt_toolkit.completion import PathCompleter
-    import subprocess
-    import sys
-    import random
-    from urllib.parse import urlparse, quote
-
-
-
     init(autoreset=True)
 
     def check_and_install_packages(packages):
@@ -56,8 +64,6 @@ try:
 
     def clear_screen():
         os.system('cls' if os.name == 'nt' else 'clear')
-
-
 
     def display_menu():
         title = r"""
@@ -120,20 +126,6 @@ try:
 
     def run_sql_scanner():
         try:
-            import requests
-            import logging
-            from requests.adapters import HTTPAdapter
-            from urllib3.util.retry import Retry
-            import urllib3
-            import time
-            import concurrent.futures
-            from colorama import Fore, init
-            import os
-            from prompt_toolkit import prompt
-            from prompt_toolkit.completion import PathCompleter
-            import subprocess
-            import sys
-            import random
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
             init(autoreset=True)
@@ -323,10 +315,6 @@ try:
                 print(f"{Fore.YELLOW}[i] Total scanned: {total_scanned}")
                 print(f"{Fore.YELLOW}[i] Time taken: {int(time.time() - start_time)} seconds")
 
-
-
-
-
             def main():
                 clear_screen()
                 required_packages = {
@@ -336,7 +324,6 @@ try:
                 }
 
                 check_and_install_packages(required_packages)
-
 
                 time.sleep(3)
                 clear_screen()
@@ -375,7 +362,6 @@ try:
                 single_url_scan = len(urls) == 1
                 start_time = time.time()
                 total_scanned = 0
-                
 
                 print(f"{Fore.CYAN}[i] Checking for WAF on target URLs...")
                 for url in urls:
@@ -479,7 +465,6 @@ try:
                                             save_prompt(vulnerable_urls)
                                             return
                                         first_vulnerability_prompt = False
-
                                 else:
                                     stripped_payload = url_with_payload.replace(url, '')
                                     encoded_stripped_payload = quote(stripped_payload, safe='')
@@ -518,43 +503,14 @@ try:
                 except KeyboardInterrupt:
                     sys.exit(0)
 
-
         except KeyboardInterrupt:
             print(f"\n{Fore.YELLOW}Program terminated by the user!")
             sys.exit(0)
 
-
-
     def run_xss_scanner():
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-        import argparse
-        import subprocess
-        import sys
-        import time
-        import aiohttp
-        import asyncio
-        import logging
-        import os
-        from colorama import Fore, init
-        from urllib.parse import urlencode, parse_qs, urlsplit, urlunsplit
-        from prompt_toolkit import prompt
-        from prompt_toolkit.completion import PathCompleter
-        from rich import print as rich_print
-        from rich.panel import Panel
-        from rich.table import Table
-        from requests.adapters import HTTPAdapter
-        from urllib3.util.retry import Retry
-        from selenium import webdriver
-        from selenium.webdriver.chrome.service import Service as ChromeService
-        from selenium.webdriver.common.by import By
-        from selenium.webdriver.chrome.options import Options
-        from selenium.webdriver.support.ui import WebDriverWait
-        from selenium.webdriver.support import expected_conditions as EC
-        from webdriver_manager.chrome import ChromeDriverManager
-        import logging
         logging.getLogger('WDM').setLevel(logging.ERROR)
-
 
         init(autoreset=True)
         logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -777,14 +733,12 @@ try:
                                 elif not self.auto_continue:
                                     self.first_vulnerability_prompt = False
 
-
             def save_injectables_to_file(self):
                 if self.injectables:
                     with open(self.output, "w") as output_file:
                         for url in self.injectables:
                             output_file.write(url + "\n")
                     print(f"{Fore.GREEN}[+] Vulnerable URLs saved to {self.output}")
-
 
             def run(self):
                 asyncio.run(self.scan())
@@ -808,8 +762,7 @@ try:
 
                 except KeyboardInterrupt:
                     sys.exit(0)
-
-                                    
+           
             def save_injectables_to_file(self):
                 with open(self.output, "w") as output_file:
                     for url in self.injectables:
@@ -926,24 +879,7 @@ try:
             except KeyboardInterrupt:
                 sys.exit(0)
 
-
-
     def run_or_scanner():
-
-        from lostsec import check_and_install_packages, clear_screen
-        from selenium import webdriver
-        from selenium.webdriver.chrome.service import Service
-        from selenium.webdriver.chrome.options import Options
-        from selenium.common.exceptions import TimeoutException
-        from webdriver_manager.chrome import ChromeDriverManager
-        from colorama import Fore, init
-        from concurrent.futures import ThreadPoolExecutor, as_completed
-        import time
-        from prompt_toolkit import prompt
-        from prompt_toolkit.completion import PathCompleter
-        from rich.panel import Panel
-        from rich import print as rich_print
-        import os
 
         init(autoreset=True)
 
@@ -1135,28 +1071,7 @@ try:
                 print(Fore.YELLOW + "\nProgram terminated by the user!")
                 exit(0)
 
-
-
     def run_lfi_scanner():
-       
-
-
-        import requests
-        import urllib.parse
-        import re
-        import os
-        import sys
-        import subprocess
-        import time
-        from concurrent.futures import ThreadPoolExecutor, as_completed
-        from prompt_toolkit import prompt
-        from prompt_toolkit.completion import PathCompleter
-        from colorama import Fore, init
-        import logging
-        from requests.adapters import HTTPAdapter
-        from urllib3.util.retry import Retry
-
-
 
         USER_AGENTS = [
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
@@ -1200,7 +1115,6 @@ try:
             'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
         }
 
-
         init(autoreset=True)
 
         def get_random_user_agent():
@@ -1212,8 +1126,6 @@ try:
                     __import__(package)
                 except ImportError:
                     subprocess.check_call([sys.executable, '-m', 'pip', 'install', f"{package}=={version}"])
-
-
 
         def get_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
             session = requests.Session()
@@ -1387,7 +1299,6 @@ try:
             expand=False
             )
             rich_print(panel, "\n")
-
             
             print(Fore.GREEN + "Welcome to the LFI Testing Tool!\n")
 
@@ -1422,7 +1333,6 @@ try:
                     total_scanned += len(payloads)
                     vulnerable_urls.extend(urls_with_payloads)
 
-
             print_scan_summary(total_found, total_scanned, start_time)
             
             save_results(vulnerable_urls)
@@ -1436,15 +1346,7 @@ try:
                 print(Fore.RED + f"[!] An unexpected error occurred: {e}")
                 sys.exit(1)
 
-
-
     def run_update():
-        import os
-        import requests
-        from git import Repo
-        import yaml
-        import shutil
-
         def load_config():
             config_path = "config.yml"
             if not os.path.isfile(config_path):
@@ -1519,7 +1421,6 @@ try:
 
         if __name__ == "__main__":
             run()
-
 
     def handle_selection(selection):
         if selection == '1':
