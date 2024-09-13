@@ -18,13 +18,13 @@
 ## Requirements
 
 - **Python 3.x**
-- `webdriver_manager==4.0.2`
-- `selenium==4.24.0`
-- `aiohttp==3.10.5`
-- `beautifulsoup4==4.12.3`
-- `colorama==0.4.6`
-- `rich==12.6.0`
-- `requests==2.28.1`
+- `webdriver_manager`
+- `selenium`
+- `aiohttp`
+- `beautifulsoup4`
+- `colorama`
+- `rich`
+- `requests`
 
 ## Installation
 
