@@ -25,6 +25,8 @@
 - `colorama`
 - `rich`
 - `requests`
+- `prompt_toolkit`
+- `webdriver-manager`
 
 ## Installation
 
