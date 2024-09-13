@@ -1,4 +1,3 @@
-windows-curses
 webdriver_manager
 selenium
 aiohttp
