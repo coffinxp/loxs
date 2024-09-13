@@ -67,9 +67,3 @@ Lostxlso allows for various levels of customization to fit your specific testing
 ## Disclaimer
 
 Lostxlso is intended for educational and ethical hacking purposes only. It should only be used to test systems you own or have explicit permission to test. Unauthorized use of third-party websites or systems without consent is illegal and unethical.
-
-## Contributors
-- AnonKryptiQuz
-- Coffinxp
-- Hexsh1dow
-- Naho
