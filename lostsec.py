@@ -235,15 +235,6 @@ try:
                 completer = PathCompleter()
                 return prompt(prompt_text, completer=completer).strip()
 
-            def handle_exception(exc_type, exc_value, exc_traceback):
-                if issubclass(exc_type, KeyboardInterrupt):
-                    print(f"\n{Fore.YELLOW}Program terminated by the user!")
-                    save_prompt()
-                    sys.exit(0)
-                else:
-                    print(f"\n{Fore.RED}An unexpected error occurred: {exc_value}")
-                    sys.exit(1)
-
             def save_prompt(vulnerable_urls=[]):
                 save_choice = input(f"{Fore.CYAN}\n[?] Do you want to save the vulnerable URLs to a file? (y/n, press Enter for n): ").strip().lower()
                 if save_choice == 'y':
