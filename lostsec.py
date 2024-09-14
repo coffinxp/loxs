@@ -12,6 +12,48 @@ class Color:
     ITALIC = '\033[3m'
     UNITALIC = '\033[23m'
 
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.2 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.70",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0",
+    "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
+    "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
+]
+
+WAF_SIGNATURES = {
+    'Cloudflare': ['cf-ray', 'cloudflare', 'cf-request-id', 'cf-cache-status'],
+    'Akamai': ['akamai', 'akamai-ghost', 'akamai-x-cache', 'x-akamai-request-id'],
+    'Sucuri': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
+    'ModSecurity': ['mod_security', 'modsecurity', 'x-modsecurity-id', 'x-mod-sec-rule'],
+    'Barracuda': ['barra', 'x-barracuda', 'bnmsg'],
+    'Imperva': ['x-cdn', 'imperva', 'incapsula', 'x-iinfo', 'x-cdn-forward'],
+    'F5 Big-IP ASM': ['x-waf-status', 'f5', 'x-waf-mode', 'x-asm-ver'],
+    'DenyAll': ['denyall', 'sessioncookie'],
+    'FortiWeb': ['fortiwafsid', 'x-fw-debug'],
+    'Jiasule': ['jsluid', 'jiasule'],
+    'AWS WAF': ['awswaf', 'x-amzn-requestid', 'x-amzn-trace-id'],
+    'StackPath': ['stackpath', 'x-sp-url', 'x-sp-waf'],
+    'BlazingFast': ['blazingfast', 'x-bf-cache-status', 'bf'],
+    'NSFocus': ['nsfocus', 'nswaf', 'nsfocuswaf'],
+    'Edgecast': ['ecdf', 'x-ec-custom-error'],
+    'Alibaba Cloud WAF': ['ali-cdn', 'alibaba'],
+    'AppTrana': ['apptrana', 'x-wf-sid'],
+    'Radware': ['x-rdwr', 'rdwr'],
+    'SafeDog': ['safedog', 'x-sd-id'],
+    'Comodo WAF': ['x-cwaf', 'comodo'],
+    'Yundun': ['yundun', 'yunsuo'],
+    'Qiniu': ['qiniu', 'x-qiniu'],
+    'NetScaler': ['netscaler', 'x-nsprotect'],
+    'Securi': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
+    'Reblaze': ['x-reblaze-protection', 'reblaze'],
+    'Microsoft Azure WAF': ['azure', 'x-mswaf', 'x-azure-ref'],
+    'NAXSI': ['x-naxsi-sig'],
+    'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
+}
+
 try:
     import os
     import requests
@@ -130,47 +172,6 @@ try:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
             init(autoreset=True)
 
-            USER_AGENTS = [
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.2 Safari/537.36",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.70",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0",
-                "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
-                "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
-            ]
-
-            WAF_SIGNATURES = {
-                'Cloudflare': ['cf-ray', 'cloudflare', 'cf-request-id', 'cf-cache-status'],
-                'Akamai': ['akamai', 'akamai-ghost', 'akamai-x-cache', 'x-akamai-request-id'],
-                'Sucuri': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-                'ModSecurity': ['mod_security', 'modsecurity', 'x-modsecurity-id', 'x-mod-sec-rule'],
-                'Barracuda': ['barra', 'x-barracuda', 'bnmsg'],
-                'Imperva': ['x-cdn', 'imperva', 'incapsula', 'x-iinfo', 'x-cdn-forward'],
-                'F5 Big-IP ASM': ['x-waf-status', 'f5', 'x-waf-mode', 'x-asm-ver'],
-                'DenyAll': ['denyall', 'sessioncookie'],
-                'FortiWeb': ['fortiwafsid', 'x-fw-debug'],
-                'Jiasule': ['jsluid', 'jiasule'],
-                'AWS WAF': ['awswaf', 'x-amzn-requestid', 'x-amzn-trace-id'],
-                'StackPath': ['stackpath', 'x-sp-url', 'x-sp-waf'],
-                'BlazingFast': ['blazingfast', 'x-bf-cache-status', 'bf'],
-                'NSFocus': ['nsfocus', 'nswaf', 'nsfocuswaf'],
-                'Edgecast': ['ecdf', 'x-ec-custom-error'],
-                'Alibaba Cloud WAF': ['ali-cdn', 'alibaba'],
-                'AppTrana': ['apptrana', 'x-wf-sid'],
-                'Radware': ['x-rdwr', 'rdwr'],
-                'SafeDog': ['safedog', 'x-sd-id'],
-                'Comodo WAF': ['x-cwaf', 'comodo'],
-                'Yundun': ['yundun', 'yunsuo'],
-                'Qiniu': ['qiniu', 'x-qiniu'],
-                'NetScaler': ['netscaler', 'x-nsprotect'],
-                'Securi': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-                'Reblaze': ['x-reblaze-protection', 'reblaze'],
-                'Microsoft Azure WAF': ['azure', 'x-mswaf', 'x-azure-ref'],
-                'NAXSI': ['x-naxsi-sig'],
-                'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
-            }
             def get_random_user_agent():
                 return random.choice(USER_AGENTS)
 
@@ -491,51 +492,8 @@ try:
         init(autoreset=True)
         logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-        USER_AGENTS = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.2 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.70",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0",
-        "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
-        "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
-            ]
-        WAF_SIGNATURES = {
-            'Cloudflare': ['cf-ray', 'cloudflare', 'cf-request-id', 'cf-cache-status'],
-            'Akamai': ['akamai', 'akamai-ghost', 'akamai-x-cache', 'x-akamai-request-id'],
-            'Sucuri': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-            'ModSecurity': ['mod_security', 'modsecurity', 'x-modsecurity-id', 'x-mod-sec-rule'],
-            'Barracuda': ['barra', 'x-barracuda', 'bnmsg'],
-            'Imperva': ['x-cdn', 'imperva', 'incapsula', 'x-iinfo', 'x-cdn-forward'],
-            'F5 Big-IP ASM': ['x-waf-status', 'f5', 'x-waf-mode', 'x-asm-ver'],
-            'DenyAll': ['denyall', 'sessioncookie'],
-            'FortiWeb': ['fortiwafsid', 'x-fw-debug'],
-            'Jiasule': ['jsluid', 'jiasule'],
-            'AWS WAF': ['awswaf', 'x-amzn-requestid', 'x-amzn-trace-id'],
-            'StackPath': ['stackpath', 'x-sp-url', 'x-sp-waf'],
-            'BlazingFast': ['blazingfast', 'x-bf-cache-status', 'bf'],
-            'NSFocus': ['nsfocus', 'nswaf', 'nsfocuswaf'],
-            'Edgecast': ['ecdf', 'x-ec-custom-error'],
-            'Alibaba Cloud WAF': ['ali-cdn', 'alibaba'],
-            'AppTrana': ['apptrana', 'x-wf-sid'],
-            'Radware': ['x-rdwr', 'rdwr'],
-            'SafeDog': ['safedog', 'x-sd-id'],
-            'Comodo WAF': ['x-cwaf', 'comodo'],
-            'Yundun': ['yundun', 'yunsuo'],
-            'Qiniu': ['qiniu', 'x-qiniu'],
-            'NetScaler': ['netscaler', 'x-nsprotect'],
-            'Securi': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-            'Reblaze': ['x-reblaze-protection', 'reblaze'],
-            'Microsoft Azure WAF': ['azure', 'x-mswaf', 'x-azure-ref'],
-            'NAXSI': ['x-naxsi-sig'],
-            'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
-        }
-
-
         def clear_screen():
             os.system('cls' if os.name == 'nt' else 'clear')
-
 
         def get_random_user_agent():
             return random.choice(USER_AGENTS)
@@ -1047,48 +1005,6 @@ try:
         from concurrent.futures import ThreadPoolExecutor, as_completed
         from requests.adapters import HTTPAdapter
         from urllib3.util.retry import Retry
-
-        USER_AGENTS = [
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.2 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.70",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0",
-            "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
-            "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
-        ]
-        
-        WAF_SIGNATURES = {
-            'Cloudflare': ['cf-ray', 'cloudflare', 'cf-request-id', 'cf-cache-status'],
-            'Akamai': ['akamai', 'akamai-ghost', 'akamai-x-cache', 'x-akamai-request-id'],
-            'Sucuri': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-            'ModSecurity': ['mod_security', 'modsecurity', 'x-modsecurity-id', 'x-mod-sec-rule'],
-            'Barracuda': ['barra', 'x-barracuda', 'bnmsg'],
-            'Imperva': ['x-cdn', 'imperva', 'incapsula', 'x-iinfo', 'x-cdn-forward'],
-            'F5 Big-IP ASM': ['x-waf-status', 'f5', 'x-waf-mode', 'x-asm-ver'],
-            'DenyAll': ['denyall', 'sessioncookie'],
-            'FortiWeb': ['fortiwafsid', 'x-fw-debug'],
-            'Jiasule': ['jsluid', 'jiasule'],
-            'AWS WAF': ['awswaf', 'x-amzn-requestid', 'x-amzn-trace-id'],
-            'StackPath': ['stackpath', 'x-sp-url', 'x-sp-waf'],
-            'BlazingFast': ['blazingfast', 'x-bf-cache-status', 'bf'],
-            'NSFocus': ['nsfocus', 'nswaf', 'nsfocuswaf'],
-            'Edgecast': ['ecdf', 'x-ec-custom-error'],
-            'Alibaba Cloud WAF': ['ali-cdn', 'alibaba'],
-            'AppTrana': ['apptrana', 'x-wf-sid'],
-            'Radware': ['x-rdwr', 'rdwr'],
-            'SafeDog': ['safedog', 'x-sd-id'],
-            'Comodo WAF': ['x-cwaf', 'comodo'],
-            'Yundun': ['yundun', 'yunsuo'],
-            'Qiniu': ['qiniu', 'x-qiniu'],
-            'NetScaler': ['netscaler', 'x-nsprotect'],
-            'Securi': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-            'Reblaze': ['x-reblaze-protection', 'reblaze'],
-            'Microsoft Azure WAF': ['azure', 'x-mswaf', 'x-azure-ref'],
-            'NAXSI': ['x-naxsi-sig'],
-            'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
-        }
 
         init(autoreset=True)
 
