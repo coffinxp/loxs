@@ -57,6 +57,9 @@ WAF_SIGNATURES = {
     'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
 }
 
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 try:
     import os
     import requests
@@ -109,8 +112,6 @@ try:
             except ImportError:
                 subprocess.check_call([sys.executable, '-m', 'pip', 'install', f"{package}=={version}"])
 
-    def clear_screen():
-        os.system('cls' if os.name == 'nt' else 'clear')
 
     def display_menu():
         title = r"""
@@ -174,11 +175,6 @@ try:
     def run_sql_scanner():
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
             init(autoreset=True)
-
-            
-
-            def clear_screen():
-                os.system('cls' if os.name == 'nt' else 'clear')
 
             def get_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
                 session = requests.Session()
@@ -484,9 +480,6 @@ try:
         logging.getLogger('WDM').setLevel(logging.ERROR)
         init(autoreset=True)
         logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-        def clear_screen():
-            os.system('cls' if os.name == 'nt' else 'clear')
 
         def get_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
             session = requests.Session()
@@ -1142,9 +1135,6 @@ try:
             print(Fore.YELLOW + f"[i] Total scanned: {total_scanned}")
             print(Fore.YELLOW + f"[i] Time taken: {int(time.time() - start_time)} seconds")
             exit()
-
-        def clear_screen():
-            os.system('cls' if os.name == 'nt' else 'clear')
 
         def get_file_path(prompt_text):
             completer = PathCompleter()
