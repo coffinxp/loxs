@@ -23,6 +23,9 @@ USER_AGENTS = [
     "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
 ]
 
+def get_random_user_agent():
+    return random.choice(USER_AGENTS)
+
 WAF_SIGNATURES = {
     'Cloudflare': ['cf-ray', 'cloudflare', 'cf-request-id', 'cf-cache-status'],
     'Akamai': ['akamai', 'akamai-ghost', 'akamai-x-cache', 'x-akamai-request-id'],
@@ -172,8 +175,7 @@ try:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
             init(autoreset=True)
 
-            def get_random_user_agent():
-                return random.choice(USER_AGENTS)
+            
 
             def clear_screen():
                 os.system('cls' if os.name == 'nt' else 'clear')
@@ -485,9 +487,6 @@ try:
 
         def clear_screen():
             os.system('cls' if os.name == 'nt' else 'clear')
-
-        def get_random_user_agent():
-            return random.choice(USER_AGENTS)
 
         def get_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
             session = requests.Session()
@@ -999,8 +998,6 @@ try:
 
         init(autoreset=True)
 
-        def get_random_user_agent():
-            return random.choice(USER_AGENTS)
         
         def check_and_install_packages(packages):
             for package, version in packages.items():
