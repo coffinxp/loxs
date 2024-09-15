@@ -66,30 +66,24 @@ try:
     from urllib.parse import urlunsplit
     import asyncio
     from concurrent.futures import ThreadPoolExecutor, as_completed
-    from curses import panel
     import random
     import re
-    from wsgiref import headers
     from colorama import Fore, Style, init
     from time import sleep
     from rich import print as rich_print
     from rich.panel import Panel
-    from rich.table import Table
-    from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, quote
-    from bs4 import BeautifulSoup
+    from urllib.parse import parse_qs, urlencode, quote
     import urllib3
     from prompt_toolkit import prompt
     from prompt_toolkit.completion import PathCompleter
     import logging
     from requests.adapters import HTTPAdapter
     from urllib3.util.retry import Retry
-    import argparse
     import concurrent.futures
     import time
     import aiohttp
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service as ChromeService
-    from selenium.webdriver.common.by import By
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
