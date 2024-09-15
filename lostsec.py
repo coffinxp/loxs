@@ -274,7 +274,7 @@ try:
 
             def main():
                 clear_screen()
-                time.sleep(1)
+                sleep(1)
                 clear_screen()
 
                 panel = Panel("""                                                       
@@ -301,7 +301,7 @@ try:
 
                 threads = int(input("[?] Enter the number of concurrent threads (0-10, press Enter for 5): ").strip() or 5)
                 print(f"\n{Fore.YELLOW}[i] Loading, Please Wait...")
-                time.sleep(1)
+                sleep(1)
                 clear_screen()
                 print(f"{Fore.CYAN}[i] Starting scan...")
                 vulnerable_urls = []
@@ -712,7 +712,7 @@ try:
 
         def main():
             clear_screen()
-            time.sleep(1)
+            sleep(1)
             clear_screen()
             panel = Panel("""
    _  __________  ____________   _  ___  __________
@@ -738,7 +738,7 @@ try:
             timeout = float(input("[?] Enter the request timeout in seconds (press Enter for 3): ").strip() or 3)
                                 
             print(f"\n{Fore.YELLOW}[i] Loading, Please Wait...")
-            time.sleep(1)
+            sleep(1)
             clear_screen()
             print(f"{Fore.CYAN}[i] Starting scan...")
             print(f"{Fore.CYAN}[i] Checking for WAF on target URLs...")
@@ -792,7 +792,7 @@ try:
                 driver = get_chrome_driver()
                 print(Fore.YELLOW + f"[i] Testing payload: {payload.strip()} on {target_url}")
                 driver.get(target_url)
-                time.sleep(2)
+                sleep(2)
                 current_url = driver.current_url
                 
                 if current_url == "https://www.google.com/":
@@ -906,7 +906,7 @@ try:
             }
             check_and_install_packages(required_packages)
 
-            time.sleep(1)
+            sleep(1)
             clear_screen()
 
             panel = Panel("""
@@ -931,7 +931,7 @@ try:
             max_threads = int(max_threads_input) if max_threads_input.isdigit() and 0 <= int(max_threads_input) <= 10 else 5
 
             print(Fore.YELLOW + "\n[i] Loading, Please Wait...")
-            time.sleep(1)
+            sleep(1)
             clear_screen()
             print(Fore.CYAN + "[i] Starting scan...\n")
             print(f"{Fore.CYAN}[i] Checking for WAF on target URLs...")
@@ -1122,7 +1122,7 @@ try:
             }
             check_and_install_packages(required_packages)
 
-            time.sleep(3)
+            sleep(3)
             clear_screen()
 
             panel = Panel(
@@ -1153,7 +1153,7 @@ try:
             max_threads = int(max_threads_input) if max_threads_input.isdigit() and 0 <= int(max_threads_input) <= 10 else 5
 
             print(Fore.YELLOW + "\n[i] Loading, Please Wait...")
-            time.sleep(3)
+            sleep(3)
             clear_screen()
             print(Fore.CYAN + "[i] Starting scan...\n")
             print(f"{Fore.CYAN}[i] Checking for WAF on target URLs...")
