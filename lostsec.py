@@ -23,9 +23,6 @@ USER_AGENTS = [
     "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
 ]
 
-def get_random_user_agent():
-    return random.choice(USER_AGENTS)
-
 WAF_SIGNATURES = {
     'Cloudflare': ['cf-ray', 'cloudflare', 'cf-request-id', 'cf-cache-status'],
     'Akamai': ['akamai', 'akamai-ghost', 'akamai-x-cache', 'x-akamai-request-id'],
@@ -56,9 +53,6 @@ WAF_SIGNATURES = {
     'NAXSI': ['x-naxsi-sig'],
     'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
 }
-
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
 
 try:
     import os
@@ -112,6 +106,11 @@ try:
             except ImportError:
                 subprocess.check_call([sys.executable, '-m', 'pip', 'install', f"{package}=={version}"])
 
+    def clear_screen():
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+    def get_random_user_agent():
+        return random.choice(USER_AGENTS)
 
     def display_menu():
         title = r"""
@@ -990,14 +989,6 @@ try:
         from urllib3.util.retry import Retry
 
         init(autoreset=True)
-
-        
-        def check_and_install_packages(packages):
-            for package, version in packages.items():
-                try:
-                    __import__(package)
-                except ImportError:
-                    subprocess.check_call([sys.executable, '-m', 'pip', 'install', f"{package}=={version}"])
 
         def get_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
             session = requests.Session()
