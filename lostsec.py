@@ -55,33 +55,20 @@ WAF_SIGNATURES = {
 }
 
 try:
-    import os
-    import requests
+    import os, requests, yaml, shutil, sys, subprocess, asyncio, random, re, urllib3, logging, time, aiohttp, concurrent.futures
     from git import Repo
-    import yaml
-    import shutil
-    import sys
     from urllib.parse import urlsplit
-    import subprocess
     from urllib.parse import urlunsplit
-    import asyncio
     from concurrent.futures import ThreadPoolExecutor, as_completed
-    import random
-    import re
     from colorama import Fore, Style, init
     from time import sleep
     from rich import print as rich_print
     from rich.panel import Panel
     from urllib.parse import parse_qs, urlencode, quote
-    import urllib3
     from prompt_toolkit import prompt
     from prompt_toolkit.completion import PathCompleter
-    import logging
     from requests.adapters import HTTPAdapter
     from urllib3.util.retry import Retry
-    import concurrent.futures
-    import time
-    import aiohttp
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service as ChromeService
     from selenium.webdriver.chrome.options import Options
