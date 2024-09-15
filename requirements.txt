@@ -6,3 +6,4 @@ colorama
 rich
 requests
 prompt_toolkit
+gitpython
