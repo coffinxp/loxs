@@ -702,7 +702,7 @@ try:
         def prompt_for_urls():
             while True:
                 try:
-                    url_input = None
+                    url_input = get_file_path("[?] Enter the path to the input file containing the URLs (or press Enter to input a single URL): ")
                     if url_input:
                         if not os.path.isfile(url_input):
                             raise FileNotFoundError(f"File not found: {url_input}")
@@ -710,21 +710,19 @@ try:
                             urls = [line.strip() for line in file if line.strip()]
                         return urls
                     else:
-                        single_url = input(f"{Fore.CYAN}[?] Enter a single URL to scan: ").strip()
+                        single_url = input(Fore.CYAN + "[?] Enter a single URL to scan: ").strip()
                         if single_url:
                             return [single_url]
                         else:
-                            print(f"{Fore.RED}[!] You must provide either a file with URLs or a single URL.")
-                            input(f"{Fore.YELLOW}[i] Press Enter to try again...")
+                            print(Fore.RED + "[!] You must provide either a file with URLs or a single URL.")
+                            input(Fore.YELLOW + "\n[i] Press Enter to try again...")
                             clear_screen()
-
-                            print(f"{Fore.GREEN}Welcome to the Lostxlso XSS-Scanner! - Coffinxp - HexSh1dow - AnonKryptiQuz - Naho\n")
+                            print(Fore.GREEN + "Welcome to the Lostxlso XSS-Scanner! - Coffinxp - HexSh1dow - AnonKryptiQuz - Naho\n")
                 except Exception as e:
-                    print(f"{Fore.RED}[!] Error reading input file: {url_input}. Exception: {str(e)}")
-                    input(f"{Fore.YELLOW}[i] Press Enter to try again...")
+                    print(Fore.RED + f"[!] Error reading input file: {url_input}. Exception: {str(e)}")
+                    input(Fore.YELLOW + "[i] Press Enter to try again...")
                     clear_screen()
-
-                    print(f"{Fore.GREEN}Welcome to the Lostxlso XSS-Scanner! - Coffinxp - HexSh1dow - AnonKryptiQuz - Naho\n")
+                    print(Fore.GREEN + "Welcome to the Lostxlso XSS-Scanner! - Coffinxp - HexSh1dow - AnonKryptiQuz - Naho\n")
 
         def prompt_for_valid_file_path(prompt_text):
             while True:
@@ -796,8 +794,6 @@ try:
                 main()
             except KeyboardInterrupt:
                 sys.exit(0)
-
-
 
     def run_or_scanner():
 
