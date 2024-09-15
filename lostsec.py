@@ -54,6 +54,7 @@ try:
     from webdriver_manager.chrome import ChromeDriverManager
     from selenium.common.exceptions import TimeoutException
     from concurrent.futures import ThreadPoolExecutor
+
     USER_AGENTS = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.2 Safari/537.36",
@@ -605,6 +606,8 @@ try:
                     self.totalScanned += 1
                     chrome_options = Options()
                     chrome_options.add_argument("--headless") 
+                    chrome_options.add_argument("--no-sandbox")
+                    chrome_options.add_argument("--disable-gpu")
                     service = ChromeService(executable_path=ChromeDriverManager().install())
                     driver = webdriver.Chrome(service=service, options=chrome_options)
 
@@ -803,9 +806,7 @@ try:
         def get_chrome_driver():
             options = Options()
             options.add_argument("--headless")
-            options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--disable-gpu")
             options.add_argument("--disable-extensions")
             options.add_argument("--window-size=1920,1080")
             from selenium.webdriver.chrome.service import Service
@@ -988,9 +989,6 @@ try:
             except KeyboardInterrupt:
                 print(Fore.YELLOW + "\nProgram terminated by the user!")
                 exit(0)
-
-
-
 
     def run_lfi_scanner():
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
