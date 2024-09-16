@@ -5,4 +5,5 @@ beautifulsoup4
 colorama
 rich
 requests
+gitpython
 prompt_toolkit
