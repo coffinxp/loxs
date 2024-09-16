@@ -506,10 +506,12 @@ try:
             session.mount('https://', adapter)
             return session
         
-        def detect_waf(url, headers):
+        def detect_waf(url, headers, is_first_url=False):
+            if not is_first_url:
+                return
+
             session = get_retry_session()
             waf_detected = None
-
             try:
                 response = session.get(url, headers=headers, verify=False)
                 for waf_name, waf_identifiers in WAF_SIGNATURES.items():
@@ -522,7 +524,7 @@ try:
 
             if not waf_detected:
                 print(f"{Fore.GREEN}[+] No WAF detected.{Fore.RESET}")
-            
+
             return waf_detected
 
         class MassScanner:
@@ -610,7 +612,6 @@ try:
                     chrome_options.add_argument("--disable-gpu")
                     service = ChromeService(executable_path=ChromeDriverManager().install())
                     driver = webdriver.Chrome(service=service, options=chrome_options)
-
                     try:
                         driver.get(url)
 
@@ -746,12 +747,12 @@ try:
             time.sleep(1)
             clear_screen()
             panel = Panel("""
-   _  __________  ____________   _  ___  __________
-  | |/_/ __/ __/ / __/ ___/ _ | / |/ / |/ / __/ _  |
- _>  <_\ \_\ \  _\ \/ /__/ __ |/    /    / _// , _/
-/_/|_/___/___/ /___/\___/_/ |_/_/|_/_/|_/___/_/|_| 
-                                                   
-                                """,
+         _  __________  ____________   _  ___  __________
+        | |/_/ __/ __/ / __/ ___/ _ | / |/ / |/ / __/ _  |
+        _>  <_\ \_\ \  _\ \/ /__/ __ |/    /    / _// , _/
+       /_/|_/___/___/ /___/\___/_/ |_/_/|_/_/|_/___/_/|_| 
+                                                        
+                                        """,
                 style="bold green",
                 border_style="blue",
                 expand=False
@@ -762,21 +763,21 @@ try:
             print(Fore.GREEN + "Welcome to the XSS Testing Tool!\n")
             urls = prompt_for_urls()
 
+            is_file_input = len(urls) > 1
+
             payload_file = prompt_for_valid_file_path("[?] Enter the path to the payload file: ")
 
             output_file = "vulnerable_urls.txt"
             concurrency = int(input("\n[?] Enter the number of concurrent threads (0-10, press Enter for 5): ").strip() or 5)
             timeout = float(input("[?] Enter the request timeout in seconds (press Enter for 3): ").strip() or 3)
-                                
+                                    
             print(f"\n{Fore.YELLOW}[i] Loading, Please Wait...")
             time.sleep(1)
             clear_screen()
             print(f"{Fore.CYAN}[i] Starting scan...")
             print(f"{Fore.CYAN}[i] Checking for WAF on target URLs...")
 
-            for url in urls:
-                headers = {'User-Agent': get_random_user_agent()}
-                detect_waf(url, headers)
+            detect_waf(urls[0], {'User-Agent': get_random_user_agent()}, is_first_url=True)
 
             scanner = MassScanner(
                 urls=urls,
@@ -788,6 +789,7 @@ try:
             )
 
             scanner.run()
+
 
         if __name__ == "__main__":
             try:
