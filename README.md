@@ -74,7 +74,7 @@ Lostxlso allows for various levels of customization to fit your specific testing
 
 4. Enter your Ubuntu/kali user password.
 
-5.If you come across some errors during the install, use the following command and flag:
+5. If you come across some errors during the install, use the following command and flag:
 
 sudo apt -f install
 
