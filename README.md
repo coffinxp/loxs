@@ -76,11 +76,11 @@ Lostxlso allows for various levels of customization to fit your specific testing
 
 5. If you come across some errors during the install, use the following command and flag:
 
-sudo apt -f install
+   sudo apt -f install
 
-after this again enter this sudo dpkg -i google-chrome-stable_current_amd64.de
+   after this again enter this sudo dpkg -i google-chrome-stable_current_amd64.de
 
-Done
+   Done
 
 ## Disclaimer
 
