@@ -25,6 +25,7 @@
 - `colorama`
 - `rich`
 - `requests`
+- `gitpython`
 - `prompt_toolkit`
 
 ## Installation
