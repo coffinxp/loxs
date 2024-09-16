@@ -68,13 +68,9 @@ Lostxlso allows for various levels of customization to fit your specific testing
 
 1. Launch Terminal.
 
-2. Download the Google Chrome .deb file:
+2. Download the Google Chrome .deb file: wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
-   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-
-3. Install the downloaded Google Chrome .deb file:
-
-sudo dpkg -i google-chrome-stable_current_amd64.deb
+3. Install the downloaded Google Chrome .deb file: sudo dpkg -i google-chrome-stable_current_amd64.deb
 
 4. Enter your Ubuntu/kali user password.
 
