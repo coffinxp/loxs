@@ -55,8 +55,50 @@ try:
     from selenium.common.exceptions import TimeoutException
     from concurrent.futures import ThreadPoolExecutor
 
-    init(autoreset=True)
+    USER_AGENTS = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.2 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.70",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0",
+        "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
+        ]
 
+    WAF_SIGNATURES = {
+        'Cloudflare': ['cf-ray', 'cloudflare', 'cf-request-id', 'cf-cache-status'],
+        'Akamai': ['akamai', 'akamai-ghost', 'akamai-x-cache', 'x-akamai-request-id'],
+        'Sucuri': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
+        'ModSecurity': ['mod_security', 'modsecurity', 'x-modsecurity-id', 'x-mod-sec-rule'],
+        'Barracuda': ['barra', 'x-barracuda', 'bnmsg'],
+        'Imperva': ['x-cdn', 'imperva', 'incapsula', 'x-iinfo', 'x-cdn-forward'],
+        'F5 Big-IP ASM': ['x-waf-status', 'f5', 'x-waf-mode', 'x-asm-ver'],
+        'DenyAll': ['denyall', 'sessioncookie'],
+        'FortiWeb': ['fortiwafsid', 'x-fw-debug'],
+        'Jiasule': ['jsluid', 'jiasule'],
+        'AWS WAF': ['awswaf', 'x-amzn-requestid', 'x-amzn-trace-id'],
+        'StackPath': ['stackpath', 'x-sp-url', 'x-sp-waf'],
+        'BlazingFast': ['blazingfast', 'x-bf-cache-status', 'bf'],
+        'NSFocus': ['nsfocus', 'nswaf', 'nsfocuswaf'],
+        'Edgecast': ['ecdf', 'x-ec-custom-error'],
+        'Alibaba Cloud WAF': ['ali-cdn', 'alibaba'],
+        'AppTrana': ['apptrana', 'x-wf-sid'],
+        'Radware': ['x-rdwr', 'rdwr'],
+        'SafeDog': ['safedog', 'x-sd-id'],
+        'Comodo WAF': ['x-cwaf', 'comodo'],
+        'Yundun': ['yundun', 'yunsuo'],
+        'Qiniu': ['qiniu', 'x-qiniu'],
+        'NetScaler': ['netscaler', 'x-nsprotect'],
+        'Securi': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
+        'Reblaze': ['x-reblaze-protection', 'reblaze'],
+        'Microsoft Azure WAF': ['azure', 'x-mswaf', 'x-azure-ref'],
+        'NAXSI': ['x-naxsi-sig'],
+        'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
+        }
+    
+    init(autoreset=True)
+    
     def check_and_install_packages(packages):
         for package, version in packages.items():
             try:
@@ -130,53 +172,9 @@ try:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
             init(autoreset=True)
 
-            USER_AGENTS = [
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.2 Safari/537.36",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.70",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0",
-                "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
-                "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
-            ]
-
-            WAF_SIGNATURES = {
-                'Cloudflare': ['cf-ray', 'cloudflare', 'cf-request-id', 'cf-cache-status'],
-                'Akamai': ['akamai', 'akamai-ghost', 'akamai-x-cache', 'x-akamai-request-id'],
-                'Sucuri': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-                'ModSecurity': ['mod_security', 'modsecurity', 'x-modsecurity-id', 'x-mod-sec-rule'],
-                'Barracuda': ['barra', 'x-barracuda', 'bnmsg'],
-                'Imperva': ['x-cdn', 'imperva', 'incapsula', 'x-iinfo', 'x-cdn-forward'],
-                'F5 Big-IP ASM': ['x-waf-status', 'f5', 'x-waf-mode', 'x-asm-ver'],
-                'DenyAll': ['denyall', 'sessioncookie'],
-                'FortiWeb': ['fortiwafsid', 'x-fw-debug'],
-                'Jiasule': ['jsluid', 'jiasule'],
-                'AWS WAF': ['awswaf', 'x-amzn-requestid', 'x-amzn-trace-id'],
-                'StackPath': ['stackpath', 'x-sp-url', 'x-sp-waf'],
-                'BlazingFast': ['blazingfast', 'x-bf-cache-status', 'bf'],
-                'NSFocus': ['nsfocus', 'nswaf', 'nsfocuswaf'],
-                'Edgecast': ['ecdf', 'x-ec-custom-error'],
-                'Alibaba Cloud WAF': ['ali-cdn', 'alibaba'],
-                'AppTrana': ['apptrana', 'x-wf-sid'],
-                'Radware': ['x-rdwr', 'rdwr'],
-                'SafeDog': ['safedog', 'x-sd-id'],
-                'Comodo WAF': ['x-cwaf', 'comodo'],
-                'Yundun': ['yundun', 'yunsuo'],
-                'Qiniu': ['qiniu', 'x-qiniu'],
-                'NetScaler': ['netscaler', 'x-nsprotect'],
-                'Securi': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-                'Reblaze': ['x-reblaze-protection', 'reblaze'],
-                'Microsoft Azure WAF': ['azure', 'x-mswaf', 'x-azure-ref'],
-                'NAXSI': ['x-naxsi-sig'],
-                'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
-            }
             def get_random_user_agent():
                 return random.choice(USER_AGENTS)
-
-            def clear_screen():
-                os.system('cls' if os.name == 'nt' else 'clear')
-
+            
             def get_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
                 session = requests.Session()
                 retry = Retry(
@@ -491,52 +489,6 @@ try:
         init(autoreset=True)
         logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-        USER_AGENTS = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.2 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.70",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0",
-        "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
-        "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
-            ]
-        WAF_SIGNATURES = {
-            'Cloudflare': ['cf-ray', 'cloudflare', 'cf-request-id', 'cf-cache-status'],
-            'Akamai': ['akamai', 'akamai-ghost', 'akamai-x-cache', 'x-akamai-request-id'],
-            'Sucuri': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-            'ModSecurity': ['mod_security', 'modsecurity', 'x-modsecurity-id', 'x-mod-sec-rule'],
-            'Barracuda': ['barra', 'x-barracuda', 'bnmsg'],
-            'Imperva': ['x-cdn', 'imperva', 'incapsula', 'x-iinfo', 'x-cdn-forward'],
-            'F5 Big-IP ASM': ['x-waf-status', 'f5', 'x-waf-mode', 'x-asm-ver'],
-            'DenyAll': ['denyall', 'sessioncookie'],
-            'FortiWeb': ['fortiwafsid', 'x-fw-debug'],
-            'Jiasule': ['jsluid', 'jiasule'],
-            'AWS WAF': ['awswaf', 'x-amzn-requestid', 'x-amzn-trace-id'],
-            'StackPath': ['stackpath', 'x-sp-url', 'x-sp-waf'],
-            'BlazingFast': ['blazingfast', 'x-bf-cache-status', 'bf'],
-            'NSFocus': ['nsfocus', 'nswaf', 'nsfocuswaf'],
-            'Edgecast': ['ecdf', 'x-ec-custom-error'],
-            'Alibaba Cloud WAF': ['ali-cdn', 'alibaba'],
-            'AppTrana': ['apptrana', 'x-wf-sid'],
-            'Radware': ['x-rdwr', 'rdwr'],
-            'SafeDog': ['safedog', 'x-sd-id'],
-            'Comodo WAF': ['x-cwaf', 'comodo'],
-            'Yundun': ['yundun', 'yunsuo'],
-            'Qiniu': ['qiniu', 'x-qiniu'],
-            'NetScaler': ['netscaler', 'x-nsprotect'],
-            'Securi': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-            'Reblaze': ['x-reblaze-protection', 'reblaze'],
-            'Microsoft Azure WAF': ['azure', 'x-mswaf', 'x-azure-ref'],
-            'NAXSI': ['x-naxsi-sig'],
-            'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
-        }
-
-
-        def clear_screen():
-            os.system('cls' if os.name == 'nt' else 'clear')
-
-
         def get_random_user_agent():
             return random.choice(USER_AGENTS)
 
@@ -554,10 +506,12 @@ try:
             session.mount('https://', adapter)
             return session
         
-        def detect_waf(url, headers):
+        def detect_waf(url, headers, is_first_url=False):
+            if not is_first_url:
+                return
+
             session = get_retry_session()
             waf_detected = None
-
             try:
                 response = session.get(url, headers=headers, verify=False)
                 for waf_name, waf_identifiers in WAF_SIGNATURES.items():
@@ -570,7 +524,7 @@ try:
 
             if not waf_detected:
                 print(f"{Fore.GREEN}[+] No WAF detected.{Fore.RESET}")
-            
+
             return waf_detected
 
         class MassScanner:
@@ -654,9 +608,10 @@ try:
                     self.totalScanned += 1
                     chrome_options = Options()
                     chrome_options.add_argument("--headless") 
+                    chrome_options.add_argument("--no-sandbox")
+                    chrome_options.add_argument("--disable-gpu")
                     service = ChromeService(executable_path=ChromeDriverManager().install())
                     driver = webdriver.Chrome(service=service, options=chrome_options)
-
                     try:
                         driver.get(url)
 
@@ -748,7 +703,7 @@ try:
         def prompt_for_urls():
             while True:
                 try:
-                    url_input = None
+                    url_input = get_file_path("[?] Enter the path to the input file containing the URLs (or press Enter to input a single URL): ")
                     if url_input:
                         if not os.path.isfile(url_input):
                             raise FileNotFoundError(f"File not found: {url_input}")
@@ -756,21 +711,19 @@ try:
                             urls = [line.strip() for line in file if line.strip()]
                         return urls
                     else:
-                        single_url = input(f"{Fore.CYAN}[?] Enter a single URL to scan: ").strip()
+                        single_url = input(Fore.CYAN + "[?] Enter a single URL to scan: ").strip()
                         if single_url:
                             return [single_url]
                         else:
-                            print(f"{Fore.RED}[!] You must provide either a file with URLs or a single URL.")
-                            input(f"{Fore.YELLOW}[i] Press Enter to try again...")
+                            print(Fore.RED + "[!] You must provide either a file with URLs or a single URL.")
+                            input(Fore.YELLOW + "\n[i] Press Enter to try again...")
                             clear_screen()
-
-                            print(f"{Fore.GREEN}Welcome to the Lostxlso XSS-Scanner! - Coffinxp - HexSh1dow - AnonKryptiQuz - Naho\n")
+                            print(Fore.GREEN + "Welcome to the Lostxlso XSS-Scanner! - Coffinxp - HexSh1dow - AnonKryptiQuz - Naho\n")
                 except Exception as e:
-                    print(f"{Fore.RED}[!] Error reading input file: {url_input}. Exception: {str(e)}")
-                    input(f"{Fore.YELLOW}[i] Press Enter to try again...")
+                    print(Fore.RED + f"[!] Error reading input file: {url_input}. Exception: {str(e)}")
+                    input(Fore.YELLOW + "[i] Press Enter to try again...")
                     clear_screen()
-
-                    print(f"{Fore.GREEN}Welcome to the Lostxlso XSS-Scanner! - Coffinxp - HexSh1dow - AnonKryptiQuz - Naho\n")
+                    print(Fore.GREEN + "Welcome to the Lostxlso XSS-Scanner! - Coffinxp - HexSh1dow - AnonKryptiQuz - Naho\n")
 
         def prompt_for_valid_file_path(prompt_text):
             while True:
@@ -794,12 +747,12 @@ try:
             time.sleep(1)
             clear_screen()
             panel = Panel("""
-   _  __________  ____________   _  ___  __________
-  | |/_/ __/ __/ / __/ ___/ _ | / |/ / |/ / __/ _  |
- _>  <_\ \_\ \  _\ \/ /__/ __ |/    /    / _// , _/
-/_/|_/___/___/ /___/\___/_/ |_/_/|_/_/|_/___/_/|_| 
-                                                   
-                                """,
+         _  __________  ____________   _  ___  __________
+        | |/_/ __/ __/ / __/ ___/ _ | / |/ / |/ / __/ _  |
+        _>  <_\ \_\ \  _\ \/ /__/ __ |/    /    / _// , _/
+       /_/|_/___/___/ /___/\___/_/ |_/_/|_/_/|_/___/_/|_| 
+                                                        
+                                        """,
                 style="bold green",
                 border_style="blue",
                 expand=False
@@ -810,21 +763,21 @@ try:
             print(Fore.GREEN + "Welcome to the XSS Testing Tool!\n")
             urls = prompt_for_urls()
 
+            is_file_input = len(urls) > 1
+
             payload_file = prompt_for_valid_file_path("[?] Enter the path to the payload file: ")
 
             output_file = "vulnerable_urls.txt"
             concurrency = int(input("\n[?] Enter the number of concurrent threads (0-10, press Enter for 5): ").strip() or 5)
             timeout = float(input("[?] Enter the request timeout in seconds (press Enter for 3): ").strip() or 3)
-                                
+                                    
             print(f"\n{Fore.YELLOW}[i] Loading, Please Wait...")
             time.sleep(1)
             clear_screen()
             print(f"{Fore.CYAN}[i] Starting scan...")
             print(f"{Fore.CYAN}[i] Checking for WAF on target URLs...")
 
-            for url in urls:
-                headers = {'User-Agent': get_random_user_agent()}
-                detect_waf(url, headers)
+            detect_waf(urls[0], {'User-Agent': get_random_user_agent()}, is_first_url=True)
 
             scanner = MassScanner(
                 urls=urls,
@@ -837,13 +790,12 @@ try:
 
             scanner.run()
 
+
         if __name__ == "__main__":
             try:
                 main()
             except KeyboardInterrupt:
                 sys.exit(0)
-
-
 
     def run_or_scanner():
 
@@ -852,9 +804,7 @@ try:
         def get_chrome_driver():
             options = Options()
             options.add_argument("--headless")
-            options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--disable-gpu")
             options.add_argument("--disable-extensions")
             options.add_argument("--window-size=1920,1080")
             from selenium.webdriver.chrome.service import Service
@@ -1038,57 +988,12 @@ try:
                 print(Fore.YELLOW + "\nProgram terminated by the user!")
                 exit(0)
 
-
-
-
     def run_lfi_scanner():
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         import urllib.parse
         from concurrent.futures import ThreadPoolExecutor, as_completed
         from requests.adapters import HTTPAdapter
         from urllib3.util.retry import Retry
-
-        USER_AGENTS = [
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.2 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.70",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0",
-            "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
-            "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
-        ]
-        
-        WAF_SIGNATURES = {
-            'Cloudflare': ['cf-ray', 'cloudflare', 'cf-request-id', 'cf-cache-status'],
-            'Akamai': ['akamai', 'akamai-ghost', 'akamai-x-cache', 'x-akamai-request-id'],
-            'Sucuri': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-            'ModSecurity': ['mod_security', 'modsecurity', 'x-modsecurity-id', 'x-mod-sec-rule'],
-            'Barracuda': ['barra', 'x-barracuda', 'bnmsg'],
-            'Imperva': ['x-cdn', 'imperva', 'incapsula', 'x-iinfo', 'x-cdn-forward'],
-            'F5 Big-IP ASM': ['x-waf-status', 'f5', 'x-waf-mode', 'x-asm-ver'],
-            'DenyAll': ['denyall', 'sessioncookie'],
-            'FortiWeb': ['fortiwafsid', 'x-fw-debug'],
-            'Jiasule': ['jsluid', 'jiasule'],
-            'AWS WAF': ['awswaf', 'x-amzn-requestid', 'x-amzn-trace-id'],
-            'StackPath': ['stackpath', 'x-sp-url', 'x-sp-waf'],
-            'BlazingFast': ['blazingfast', 'x-bf-cache-status', 'bf'],
-            'NSFocus': ['nsfocus', 'nswaf', 'nsfocuswaf'],
-            'Edgecast': ['ecdf', 'x-ec-custom-error'],
-            'Alibaba Cloud WAF': ['ali-cdn', 'alibaba'],
-            'AppTrana': ['apptrana', 'x-wf-sid'],
-            'Radware': ['x-rdwr', 'rdwr'],
-            'SafeDog': ['safedog', 'x-sd-id'],
-            'Comodo WAF': ['x-cwaf', 'comodo'],
-            'Yundun': ['yundun', 'yunsuo'],
-            'Qiniu': ['qiniu', 'x-qiniu'],
-            'NetScaler': ['netscaler', 'x-nsprotect'],
-            'Securi': ['x-sucuri-id', 'sucuri', 'x-sucuri-cache'],
-            'Reblaze': ['x-reblaze-protection', 'reblaze'],
-            'Microsoft Azure WAF': ['azure', 'x-mswaf', 'x-azure-ref'],
-            'NAXSI': ['x-naxsi-sig'],
-            'Wallarm': ['x-wallarm-waf-check', 'wallarm'],
-        }
 
         init(autoreset=True)
 
