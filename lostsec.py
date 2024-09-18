@@ -1334,7 +1334,7 @@ try:
             print_exit_menu()
 
     def main():
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        warnings.filterwarnings("ignore", category=SyntaxWarning)
         clear_screen()
         sleep(1)
         clear_screen()
