@@ -150,7 +150,7 @@ try:
     def print_exit_menu():
         clear_screen()
 
-        panel = Panel("""
+        panel = Panel(r"""
  ______               ______              
 |   __ \.--.--.-----.|   __ \.--.--.-----.
 |   __ <|  |  |  -__||   __ <|  |  |  -__|
@@ -305,7 +305,7 @@ try:
                 time.sleep(1)
                 clear_screen()
 
-                panel = Panel("""                                                       
+                panel = Panel(r"""                                                       
                ___                                         
    _________ _/ (_)  ______________ _____  ____  ___  _____
   / ___/ __ `/ / /  / ___/ ___/ __ `/ __ \/ __ \/ _ \/ ___/
@@ -746,7 +746,7 @@ try:
             clear_screen()
             time.sleep(1)
             clear_screen()
-            panel = Panel("""
+            panel = Panel(r"""
          _  __________  ____________   _  ___  __________
         | |/_/ __/ __/ / __/ ___/ _ | / |/ / |/ / __/ _  |
         _>  <_\ \_\ \  _\ \/ /__/ __ |/    /    / _// , _/
@@ -938,7 +938,7 @@ try:
             time.sleep(1)
             clear_screen()
 
-            panel = Panel("""
+            panel = Panel(r"""
         ____  ___    ____________   _  ___  __________
        / __ \/ _ \  / __/ ___/ _ | / |/ / |/ / __/ _  |
       / /_/ / , _/ _\ \/ /__/ __ |/    /    / _// , _/
@@ -1165,7 +1165,7 @@ try:
             clear_screen()
 
             panel = Panel(
-            """
+            r"""
     __    __________   _____                                 
    / /   / ____/  _/  / ___/_________ _____  ____  ___  _____
   / /   / /_   / /    \__ \/ ___/ __ `/ __ \/ __ \/ _ \/ ___/
@@ -1334,6 +1334,7 @@ try:
             print_exit_menu()
 
     def main():
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         clear_screen()
         sleep(1)
         clear_screen()
