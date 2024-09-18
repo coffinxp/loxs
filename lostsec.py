@@ -1161,7 +1161,7 @@ try:
             }
             check_and_install_packages(required_packages)
 
-            time.sleep(3)
+            time.sleep(1)
             clear_screen()
 
             panel = Panel(
@@ -1192,7 +1192,7 @@ try:
             max_threads = int(max_threads_input) if max_threads_input.isdigit() and 0 <= int(max_threads_input) <= 10 else 5
 
             print(Fore.YELLOW + "\n[i] Loading, Please Wait...")
-            time.sleep(3)
+            time.sleep(1)
             clear_screen()
             print(Fore.CYAN + "[i] Starting scan...\n")
             print(f"{Fore.CYAN}[i] Checking for WAF on target URLs...")
