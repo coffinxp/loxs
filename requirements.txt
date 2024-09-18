@@ -7,3 +7,4 @@ rich
 requests
 gitpython
 prompt_toolkit
+pyyaml
