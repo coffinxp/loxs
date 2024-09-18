@@ -27,6 +27,7 @@
 - `requests`
 - `gitpython`
 - `prompt_toolkit`
+- `pyyaml`
 
 ## Installation
 
