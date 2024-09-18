@@ -1334,7 +1334,6 @@ try:
             print_exit_menu()
 
     def main():
-        warnings.filterwarnings("ignore", category=SyntaxWarning)
         clear_screen()
         sleep(1)
         clear_screen()
