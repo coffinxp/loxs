@@ -28,6 +28,7 @@
 - `gitpython`
 - `prompt_toolkit`
 - `pyyaml`
+- `Flask`
 
 ## Installation
 
