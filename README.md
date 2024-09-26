@@ -35,7 +35,7 @@
 ### Clone the repository
 
 ```bash
-git clone https://github.com/coffinsp/lostools
+git clone https://github.com/coffinxp/lostools
 cd lostools
 ```
 ## Running the Script
