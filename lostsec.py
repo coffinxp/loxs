@@ -52,7 +52,8 @@ try:
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
-    from webdriver_manager.chrome import ChromeDriverManager
+#    from webdriver_manager.chrome import ChromeDriverManager
+    import chromedriver_autoinstaller as ChromeDriverManager
     from selenium.common.exceptions import TimeoutException
     from concurrent.futures import ThreadPoolExecutor
 
@@ -539,7 +540,7 @@ try:
                     chrome_options.add_argument("--disable-gpu")
                     chrome_options.add_argument("--disable-dev-shm-usage")
 
-                    service = ChromeService(executable_path=ChromeDriverManager().install())
+                    service = ChromeService(executable_path=ChromeDriverManager.install())
                     driver = webdriver.Chrome(service=service, options=chrome_options)
                     try:
                         driver.get(url)
@@ -734,7 +735,7 @@ try:
             options.add_argument("--window-size=1920,1080")
             from selenium.webdriver.chrome.service import Service
 
-            service = Service(ChromeDriverManager().install())
+            service = Service(ChromeDriverManager.install())
             driver = webdriver.Chrome(service=service, options=options)
             driver.set_page_load_timeout(10)
             return driver
