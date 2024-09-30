@@ -1,5 +1,0 @@
-app:  
-  identifier: "lostsec"  
-  repository: "https://github.com/coffinxp/lostools"  
-  directory: "/home/coffinxp/lostools"  
-  executable: "lostsec.py"
