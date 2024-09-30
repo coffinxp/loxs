@@ -58,7 +58,7 @@
 ### Clone the repository
 
 ```bash
-git clone https://github.com/1hehaq/loxs.git
+git clone https://github.com/coffinxp/lostools.git
 ```
 ```bash
 cd loxs
