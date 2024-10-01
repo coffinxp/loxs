@@ -61,7 +61,7 @@
 git clone https://github.com/coffinxp/lostools.git
 ```
 ```bash
-cd loxs
+cd lostools
 ```
 
 ### Install the requirements
