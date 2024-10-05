@@ -30,29 +30,29 @@ katana -u "$website_url" -d 5 -f qurl | uro | anew "$output_dir/"$website_input"
 # XSS
 echo "Filtering URLs for potential XSS endpoints..."
 cat "$output_dir/"$website_input"/output.txt" | Gxss | kxss | grep -oP '^URL: \K\S+' | sed 's/=.*/=/' | sort -u > "$output_dir/xss_output.txt"
-echo "Extracting final filtered URLs to $output_dir/"$website_input"/xss_output.txt..."
+echo "Extracting final filtered XSS URLs to $output_dir/"$website_input"/xss_output.txt..."
 
 # Open Redirect
 echo "Filtering URLs for potential Open Redirect endpoints..."
 cat "$output_dir/"$website_input"/output.txt" | gf or | sed 's/=.*/=/' | sort -u > "$output_dir/"$website_input"/open_redirect_output.txt"
-echo "Extracting final filtered URLs to $output_dir/"$website_input"/open_redirect_output.txt..."
+echo "Extracting final filtered Open Redirect URLs to $output_dir/"$website_input"/open_redirect_output.txt..."
 
 # LFI
 echo "Filtering URLs for potential LFI endpoints..."
 cat "$output_dir/""$website_input""/output.txt" | gf lfi | sed 's/=.*/=/' | sort -u > "$output_dir/"$website_input"/lfi_output.txt"
-echo "Extracting final filtered URLs to $output_dir/"$website_input"/open_redirect_output.txt..."
+echo "Extracting final filtered LFI URLs to $output_dir/"$website_input"/open_redirect_output.txt..."
 
 # SQLi
 echo "Filtering URLs for potential SQLi endpoints..."
 cat "$output_dir/"$website_input"/output.txt" | gf sqli | sed 's/=.*/=/' | sort -u > "$output_dir/"$website_input"/sqli_output.txt"
-echo "Extracting final filtered URLs to $output_dir/"$website_input"/lfi_output.txt..."
+echo "Extracting final filtered SQLi URLs to $output_dir/"$website_input"/lfi_output.txt..."
 
 # Remove the intermediate file output/output.txt
-rm "$output_dir/output.txt"
+rm "$output_dir/"$website_input"/output.txt"
 
 # Notify the user that all tasks are complete
-echo "Filtered URLs have been saved to the respective output files in the 'output' directory:"
-echo "  - XSS: $output_dir/xss_output.txt"
-echo "  - Open Redirect: $output_dir/open_redirect_output.txt"
-echo "  - LFI: $output_dir/lfi_output.txt"
-echo "  - SQLi: $output_dir/sqli_output.txt"
+echo "Filtered URLs have been saved to the respective output files in the 'output/$website_input' directory:"
+echo "  - XSS: $output_dir/"$website_input"/xss_output.txt"
+echo "  - Open Redirect: $output_dir/"$website_input"/open_redirect_output.txt"
+echo "  - LFI: $output_dir/"$website_input"/lfi_output.txt"
+echo "  - SQLi: $output_dir/"$website_input"/sqli_output.txt"
