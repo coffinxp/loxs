@@ -29,7 +29,7 @@ katana -u "$website_url" -d 5 -f qurl | uro | anew "$output_dir/"$website_input"
 
 # XSS
 echo "Filtering URLs for potential XSS endpoints..."
-cat "$output_dir/"$website_input"/output.txt" | Gxss | kxss | grep -oP '^URL: \K\S+' | sed 's/=.*/=/' | sort -u > "$output_dir/xss_output.txt"
+cat "$output_dir/"$website_input"/output.txt" | Gxss | kxss | grep -oP '^URL: \K\S+' | sed 's/=.*/=/' | sort -u > "$output_dir/"$website_input"/xss_output.txt"
 echo "Extracting final filtered XSS URLs to $output_dir/"$website_input"/xss_output.txt..."
 
 # Open Redirect
