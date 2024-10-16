@@ -58,10 +58,10 @@
 ### Clone the repository
 
 ```bash
-git clone https://github.com/coffinxp/lostools.git
+git clone https://github.com/coffinxp/loxs.git
 ```
 ```bash
-cd lostools
+cd loxs
 ```
 
 ### Install the requirements
