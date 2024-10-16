@@ -38,7 +38,7 @@
 | `User-friendly CLI`               | Simple and intuitive command-line interface.                                |
 | `Save Vulnerable URLs`            | Option to save vulnerable URLs to a file for future reference.              |
 | `HTML Report Generation`          | Generates a detailed HTML report of found vulnerabilities.                  |
-| `Share HTML Report via Telegram`  | Share HTML vulnerability reports directly through Telegram.                 |
+<!-- | `Share HTML Report via Telegram`  | Share HTML vulnerability reports directly through Telegram.                 | -->
 
 <br>
 <hr>
