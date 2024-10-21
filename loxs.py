@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+VERSION = 'v1'
+
 class Color:
     BLUE = '\033[94m'
     GREEN = '\033[1;92m'
@@ -63,6 +65,11 @@ try:
     from selenium.common.exceptions import TimeoutException, UnexpectedAlertPresentException
     import signal
     from functools import partial
+    from packaging import version
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.progress import Progress
+    from rich.text import Text
 
     USER_AGENTS = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
@@ -1313,7 +1320,7 @@ try:
    ____  ___    ____________   _  ___  __________
   / __ \/ _ \  / __/ ___/ _ | / |/ / |/ / __/ _  |
  / /_/ / , _/ _\ \/ /__/ __ |/    /    / _// , _/
-/____/_/|_| /___/\___/_/ |_/_/|_/_/|_/___/_/|_| 
+/____//_/|_| /___/\___/_/ |_/_/|_/_/|_/___/_/|_| 
         
                         """,
             style="bold green",
@@ -1629,81 +1636,110 @@ try:
         os._exit(0)
 
     def run_update():
+        
+        console = Console()
+        def display_update_intro():
+            panel = Panel(
+                r"""
+ 
+░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓███████▓▒░ ░▒▓██████▓▒░▒▓████████▓▒░▒▓████████▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░ ░▒▓█▓▒░   ░▒▓██████▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░
+ ░▒▓██████▓▒░░▒▓█▓▒░      ░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓████████▓▒░
+        """,
+                title="LOXS UPDATER",
+                expand=False,
+                border_style="blue",
+                style="bold green",
+            )
+            console.print(panel)
+            console.print("[cyan] Wlcome to the loxs updater![/cyan]\n")
 
-        def load_config():
-            config_path = "config.yml"
-            if not os.path.isfile(config_path):
-                print(Color.YELLOW + "[!] Configuration file not found.")
-                os._exit(0)
-
-            with open(config_path, "r") as file:
-                try:
-                    config = yaml.safe_load(file)
-                except Exception as e:
-                    print(Color.YELLOW + f"[!] Error loading configuration file: {e}")
-                    os._exit(0)
-
-            global appIdentifier, appRepo, appDir, appExecName
+        def get_latest_release(repo_owner, repo_name):
+            url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
             try:
-                appIdentifier = config['app']['identifier']
-                appRepo = config['app']['repository']
-                appDir = config['app']['directory']
-                appExecName = config['app']['executable']
-            except KeyError as e:
-                print(Color.YELLOW + f"[!] Missing key in configuration file: {e}")
-                os._exit(0)
+                response = requests.get(url)
+                response.raise_for_status()
+                release_data = response.json()
+                return release_data['tag_name'], release_data
+            except requests.exceptions.RequestException as e:
+                console.print(f"[red][!] Error fetching release information: {e}[/red]")
+                return None, None
 
-            if not os.path.isdir(appDir):
-                print(Color.YELLOW + f"[!] The directory specified in config.yml does not exist: {appDir}")
-                os._exit(0)
-
-        def get_remote_version(repo_url):
+        def get_current_version():
             try:
-                repo = Repo.clone_from(repo_url, 'temp_repo', depth=1)
-                latest_commit = repo.head.commit
-                shutil.rmtree('temp_repo')
-                return latest_commit.hexsha
-            except Exception as e:
-                print(Color.YELLOW + f"[!] Error accessing remote repository: {e}")
-                os._exit(0)
-
-        def get_local_version(file_path):
-            if os.path.isfile(file_path):
-                return os.popen(f"git log -1 --format=%H {file_path}").read().strip()
+                with open(__file__, 'r') as file:
+                    for line in file:
+                        if line.startswith('VERSION ='):
+                            return line.split('=')[1].strip().strip("'\"")
+            except IOError as e:
+                console.print(f"[red][!] Error reading current version: {e}[/red]")
             return None
 
-        def update_file():
+        def download_update(download_url, file_path):
             try:
-                print(Color.GREEN + "[i] Updating file...")
-                temp_repo_dir = 'temp_repo'
-                if os.path.isdir(temp_repo_dir):
-                    shutil.rmtree(temp_repo_dir)
-                Repo.clone_from(appRepo, temp_repo_dir)
-                source_file = os.path.join(temp_repo_dir, appExecName)
-                if os.path.isfile(source_file):
-                    shutil.copy(source_file, appDir)
-                    print(Color.GREEN + "[i] Update completed.")
-                    clear_screen()
-                else:
-                    print(Color.YELLOW + "[!] File to update not found in the repository.")
-                shutil.rmtree(temp_repo_dir) 
-            except Exception as e:
-                print(Color.RED + f"[!] Error during update: {e}")
-                os._exit(0)
+                with Progress() as progress:
+                    task = progress.add_task("[cyan]Downloading update...", total=100)
+                    response = requests.get(download_url, stream=True)
+                    response.raise_for_status()
+                    total_size = int(response.headers.get('content-length', 0))
+                    block_size = 1024
+                    with open(file_path, 'wb') as file:
+                        for data in response.iter_content(block_size):
+                            size = file.write(data)
+                            progress.update(task, advance=(size/total_size)*100)
+                console.print("[green][✓] Update downloaded successfully.[/green]")
+                return True
+            except requests.exceptions.RequestException as e:
+                console.print(f"[red][!] Error downloading update: {e}[/red]")
+                return False
 
-        def run():
-            load_config()
-            local_version = get_local_version(os.path.join(appDir, appExecName))
-            remote_version = get_remote_version(appRepo)
+        display_update_intro()
 
-            if local_version != remote_version:
-                print(Color.GREEN + "[i] An update is available.")
-                update_file()
+        repo_owner = "coffinxp"
+        repo_name = "loxs"
+        current_version = get_current_version()
+
+        if current_version is None:
+            console.print("[yellow][!] Unable to find current version.[/yellow]")
+            input("\nPress Enter to return to the main menu...")
+            return
+
+        console.print(f"[cyan][i] Current version: {current_version}[/cyan]")
+        console.print("[cyan][i] Checking for updates...[/cyan]")
+
+        latest_version, release_data = get_latest_release(repo_owner, repo_name)
+
+        if latest_version is None:
+            console.print("[yellow][!] Unable to check for updates.[/yellow]")
+            input("\nPress Enter to return to the main menu...")
+            return
+
+        if version.parse(latest_version) > version.parse(current_version):
+            console.print(f"[green][✓] New version available: {latest_version}[/green]")
+            update_choice = console.input("[cyan][?] Do you want to update? (y/n): [/cyan]").lower().strip()
+            
+            if update_choice == 'y':
+                try:
+                    download_url = release_data['assets'][0]['browser_download_url']
+                    
+                    if download_update(download_url, __file__):
+                        console.print("[green][✓] Update completed. Please restart loxs..!![/green]")
+                    else:
+                        console.print("[red][!] Update failed.[/red]")
+                except (KeyError, IndexError) as e:
+                    console.print(f"[red][!] Error fetching release assets: {e}[/red]")
             else:
-                print(Color.YELLOW + "[i] No update is needed.")
+                console.print("[yellow][i] Update cancelled.[/yellow]")
+        else:
+            console.print("[green][✓] You are already using the latst version.[/green]")
+            console.print(f"[cyan][i] Current version: {current_version}[/cyan]")
+            console.print(f"[cyan][i] Latest version: {latest_version}[/cyan]")
 
-        if __name__ == "__main__":
-            run()
+        input("\nPress Enter to return to the main menu...")
 
 
     def handle_selection(selection):
@@ -1726,6 +1762,7 @@ try:
         elif selection == '5':
             clear_screen()
             run_update()
+            clear_screen()
 
         elif selection == '6':
             clear_screen()
