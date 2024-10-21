@@ -1,5 +1,0 @@
-app:  
-  identifier: "loxs"  
-  repository: "https://github.com/coffinxp/lostools"  
-  directory: "/home/coffinxp/lostools"  
-  executable: "loxs.py"
