@@ -14,8 +14,9 @@
 | `O`| `=`| `Open Redirection (OR)`|
 | `X`| `=`| `Cross Site Scripting (XSS)`|
 | `S`| `=`| `Structured Query Language Injection (SQLi)`|
+|    |    | `Carriage Return Line Feed Injection (CRLF)`|
 
-> **Loxs** is an easy-to-use tool that finds web issues like `LFI` - `OR` - `SQLi` - `XSS`. <br><br> *`Made by`* - [`AnonKryptiQuz`](https://github.com/AnonKryptiQuz) x [`Coffinxp`](https://github.com/coffinxp) x [`HexShad0w`](https://github.com/HexShad0w) x [`Naho`](https://github.com/Naho666) x [`1hehaq`](https://github.com/1hehaq)!
+> **Loxs** is an easy-to-use tool that finds web issues like `LFI` - `OR` - `SQLi` - `XSS` - `CRLF`. <br><br> *`Made by`* - [`AnonKryptiQuz`](https://github.com/AnonKryptiQuz) x [`Coffinxp`](https://github.com/coffinxp) x [`HexShad0w`](https://github.com/HexShad0w) x [`Naho`](https://github.com/Naho666) x [`1hehaq`](https://github.com/1hehaq)!
 
 </div>
 
@@ -32,6 +33,7 @@
 | `OR Scanner`                      | Identify Open Redirect vulnerabilities.                                     |
 | `SQL Scanner`                     | Detect SQL Injection vulnerabilities.                                       |
 | `XSS Scanner`                     | Identify Cross-Site Scripting vulnerabilities.                              |
+| `CRLF Scanner`                    | Detect Carriage Return Line Feed Injection vulnerabilities.                 |
 | `Multi-threaded Scanning`         | Improved performance through multi-threading.                               |
 | `Customizable Payloads`           | Adjust payloads to suit specific targets.                                   |
 | `Success Criteria`                | Modify success detection criteria for specific use cases.                   |
