@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-VERSION = 'v1'
+VERSION = 'v1.0.2'
 
 class Color:
     BLUE = '\033[94m'
@@ -716,8 +716,8 @@ try:
                     payload_input = get_file_path("[?] Enter the path to the payloads file: ")
                     if not os.path.isfile(payload_input):
                         raise FileNotFoundError(f"File not found: {payload_input}")
-                    with open(payload_input) as file:
-                        payloads = [line.strip() for line in file if line.strip()]
+                    with open(payload_input, 'r', encoding='utf-8') as f:
+                        payloads = [line.strip() for line in f if line.strip()]
                     return payloads
                 except Exception as e:
                     print(f"{Fore.RED}[!] Error reading payload file: {payload_input}. Exception: {str(e)}")
@@ -1266,8 +1266,8 @@ try:
                     payload_input = get_file_path("[?] Enter the path to the payloads file: ")
                     if not os.path.isfile(payload_input):
                         raise FileNotFoundError(f"File not found: {payload_input}")
-                    with open(payload_input) as file:
-                        payloads = [line.strip() for line in file if line.strip()]
+                    with open(payload_input, 'r', encoding='utf-8') as f:
+                        payloads = [line.strip() for line in f if line.strip()]
                     return payloads
                 except Exception as e:
                     print(Fore.RED + f"[!] Error reading payload file: {payload_input}. Exception: {str(e)}")
@@ -1516,8 +1516,8 @@ try:
                     payload_input = get_file_path("[?] Enter the path to the payloads file: ")
                     if not os.path.isfile(payload_input):
                         raise FileNotFoundError(f"File not found: {payload_input}")
-                    with open(payload_input) as file:
-                        payloads = [line.strip() for line in file if line.strip()]
+                    with open(payload_input, 'r', encoding='utf-8') as f:
+                        payloads = [line.strip() for line in f if line.strip()]
                     return payloads
                 except Exception as e:
                     print(Fore.RED + f"[!] Error reading payload file: {payload_input}. Exception: {str(e)}")
