@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-VERSION = 'v1.0.3'
+VERSION = 'v1.2'
 
 class Color:
     BLUE = '\033[94m'
@@ -1060,16 +1060,16 @@ try:
             if action == 'y':
                 html_content = generate_html_report("Cross-Site Scripting (XSS)", total_found, total_scanned, int(time.time() - start_time), vulnerable_urls)
                 
-                filename = input(Fore.CYAN + "[?] Enter the filename for the HTML report (e.g., report.html) or press Enter to use 'xss_report.html': ").strip()
+                filename = input(Fore.CYAN + "[?] Enter the filename for the HTML report or press Enter to use 'xssreport.html': ").strip()
                 if not filename:
-                    filename = 'xss_report.html'
-                    print(Fore.YELLOW + "[i] No filename provided. Using 'xss_report.html'.")
+                    filename = 'xssreport.html'
+                    print(Fore.YELLOW + "[i] No filename provided. Using 'xssreport.html'.")
 
                 print(f"DEBUG: Chosen filename: '{filename}'")
                 
                 report_file = save_html_report(html_content, filename)
             else:
-                print(Fore.RED + "[!] Invalid option. Exiting the program.")
+                print(Fore.RED + "\nExiting...")
                 os._exit(0)
 
         def clear_screen():
