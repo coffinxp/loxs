@@ -916,6 +916,13 @@ try:
         logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
         console = Console()
 
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        from queue import Queue
+        from threading import Lock
+
+        driver_pool = Queue()
+        driver_lock = Lock()
+
         def load_payloads(payload_file):
             try:
                 with open(payload_file, "r") as file:
@@ -938,19 +945,47 @@ try:
                 url_combinations.append(modified_url)
             return url_combinations
 
-        async def check_vulnerability(url, payloads, vulnerable_urls, total_scanned, driver):
-            for payload in payloads:
+        def create_driver():
+            chrome_options = Options()
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("--disable-gpu")
+            chrome_options.add_argument("--disable-extensions")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("--disable-browser-side-navigation")
+            chrome_options.add_argument("--disable-infobars")
+            chrome_options.add_argument("--disable-notifications")
+            chrome_options.page_load_strategy = 'eager'
+            logging.disable(logging.CRITICAL)
+
+            driver_service = Service(ChromeDriverManager().install())
+            return webdriver.Chrome(service=driver_service, options=chrome_options)
+
+        def get_driver():
+            try:
+                return driver_pool.get_nowait()
+            except:
+                with driver_lock:
+                    return create_driver()
+
+        def return_driver(driver):
+            driver_pool.put(driver)
+
+        def check_vulnerability(url, payload, vulnerable_urls, total_scanned):
+            driver = get_driver()
+            try:
                 payload_urls = generate_payload_urls(url, payload)
                 if not payload_urls:
-                    continue
+                    return
+                    
                 for payload_url in payload_urls:
-                    print(Fore.YELLOW + f"[→] Scanning payload: {payload}")
                     try:
                         driver.get(payload_url)
                         total_scanned[0] += 1
+                        
                         try:
-                            WebDriverWait(driver, 0).until(EC.alert_is_present())
-                            alert = driver.switch_to.alert
+                            alert = WebDriverWait(driver, 0.3).until(EC.alert_is_present())
                             alert_text = alert.text
 
                             if alert_text:
@@ -967,56 +1002,47 @@ try:
                                 print(result)
 
                         except TimeoutException:
-                            result = Fore.RED + f"[✗]{Fore.CYAN} Not Vulnerable:{Fore.RED} {payload_url}"
-                            print(result)
-
-                    except UnexpectedAlertPresentException as e:
-                        try:
-                            alert = driver.switch_to.alert
-                            alert_text = alert.text
-                            result = Fore.CYAN + f"[!] Unexpected Alert:{Fore.LIGHTBLACK_EX} {payload_url} {Fore.CYAN} - Alert: {Fore.GREEN}Might be Vulnerable!"
-                            print(result)
-                            alert.accept()
-                        except Exception as inner_e:
-                            print(Fore.RED + f"[!] Error handling unexpected alert: {inner_e}")
-                    
-
-            if scan_state:
-                scan_state['total_scanned'] += len(payloads)
-
-        async def scan(urls, payloads, vulnerable_urls, total_scanned, concurrency, driver):
-            semaphore = asyncio.Semaphore(concurrency)
-            tasks = []
-            for url in urls:
-                tasks.append(bound_check(url, semaphore, payloads, vulnerable_urls, total_scanned, driver))
-            await asyncio.gather(*tasks)
-
-        async def bound_check(url, semaphore, payloads, vulnerable_urls, total_scanned, driver):
-            async with semaphore:
-                await check_vulnerability(url, payloads, vulnerable_urls, total_scanned, driver)
+                            print(Fore.RED + f"[✗]{Fore.CYAN} Not Vulnerable:{Fore.RED} {payload_url}")
+            
+                    except UnexpectedAlertPresentException:
+                        pass 
+            finally:
+                return_driver(driver)
 
         def run_scan(urls, payload_file, concurrency, timeout):
             payloads = load_payloads(payload_file)
             vulnerable_urls = []
             total_scanned = [0]
-            start_time = time.time()
-
-            chrome_options = Options()
-            chrome_options.add_argument("--headless")
-            chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            logging.getLogger('urllib3').setLevel(logging.CRITICAL)
-
-            driver_service = Service(ChromeDriverManager().install())
-            driver = webdriver.Chrome(service=driver_service, options=chrome_options)
             
+            for _ in range(min(concurrency, 3)):
+                driver_pool.put(create_driver())
+                
             try:
-                asyncio.run(scan(urls, payloads, vulnerable_urls, total_scanned, concurrency, driver))
-            except Exception as e:
-                print(Fore.RED + f"[!] Error during scan: {e}")
+                with ThreadPoolExecutor(max_workers=concurrency) as executor:
+                    futures = []
+                    for url in urls:
+                        for payload in payloads:
+                            futures.append(
+                                executor.submit(
+                                    check_vulnerability,
+                                    url,
+                                    payload,
+                                    vulnerable_urls,
+                                    total_scanned
+                                )
+                            )
+                    
+                    for future in as_completed(futures):
+                        try:
+                            future.result(timeout=timeout)
+                        except Exception as e:
+                            print(Fore.RED + f"[!] Error during scan: {e}")
+                            
             finally:
-                driver.quit()
-            
+                while not driver_pool.empty():
+                    driver = driver_pool.get()
+                    driver.quit()
+                    
             return vulnerable_urls, total_scanned[0]
 
         def print_scan_summary(total_found, total_scanned, start_time):
@@ -1713,17 +1739,18 @@ try:
             session.mount('https://', adapter)
             return session
 
-        def check_crlf_vulnerability(url, payload):
-            payloads = generate_payloads(url)
+        def check_crlf_vulnerability(url, payload, scan_state=None):
             target_url = f"{url}{payload}"
             start_time = time.time()
-            
+
             headers = {
                 'User-Agent': get_random_user_agent(),
                 'Accept': '*/*',
                 'Accept-Encoding': 'gzip, deflate',
                 'Connection': 'close'
             }
+
+            result = None
 
             try:
                 session = get_retry_session()
@@ -1734,9 +1761,10 @@ try:
                 vulnerability_details = []
 
                 for header, value in response.headers.items():
-                    if any(re.search(pattern, f"{header}: {value}", re.IGNORECASE) for pattern in REGEX_PATTERNS):
+                    combined_header = f"{header}: {value}"
+                    if any(re.search(pattern, combined_header, re.IGNORECASE) for pattern in REGEX_PATTERNS):
                         is_vulnerable = True
-                        vulnerability_details.append(f"{Fore.WHITE}Header Injection: {Fore.LIGHTBLACK_EX}{header}: {value}")
+                        vulnerability_details.append(f"{Fore.WHITE}Header Injection: {Fore.LIGHTBLACK_EX}{combined_header}")
 
                 if any(re.search(pattern, response.text, re.IGNORECASE) for pattern in REGEX_PATTERNS):
                     is_vulnerable = True
@@ -1744,13 +1772,13 @@ try:
 
                 if response.status_code in [200, 201, 202, 204, 205, 206, 207, 301, 302, 307, 308]:
                     if is_vulnerable:
-                        result = Fore.GREEN + f"[✓] {Fore.CYAN}Vulnerable: {Fore.GREEN} {target_url} {Fore.CYAN} - Response Time: {response_time:.2f} seconds"
+                        result = (Fore.GREEN + f"[✓] {Fore.CYAN}Vulnerable: {Fore.GREEN} {target_url} "
+                                f"{Fore.CYAN} - Response Time: {response_time:.2f} seconds")
                         if vulnerability_details:
                             result += "\n    {}↪ ".format(Fore.YELLOW) + "\n    {}↪ ".format(Fore.YELLOW).join(vulnerability_details)
                     else:
-                        result = Fore.RED + f"[✗] {Fore.CYAN}Not Vulnerable: {Fore.RED} {target_url} {Fore.CYAN} - Response Time: {response_time:.2f} seconds"
-                else:
-                    result = Fore.RED + f"[✗] {Fore.CYAN}Not Vulnerable: {Fore.RED} {target_url} {Fore.CYAN} - Response Time: {response_time:.2f} seconds"
+                        result = (Fore.RED + f"[✗] {Fore.CYAN}Not Vulnerable: {Fore.RED} {target_url} "
+                                f"{Fore.CYAN} - Response Time: {response_time:.2f} seconds")
 
                 if scan_state:
                     scan_state['total_scanned'] += 1
@@ -1762,8 +1790,9 @@ try:
                 return result, is_vulnerable
 
             except requests.exceptions.RequestException as e:
-                print(Fore.RED + f"[!] Error accessing {target_url}: {str(e)}")
-                return None, False
+                result = Fore.RED + f"[!] Error accessing {target_url}: {str(e)}"
+                print(result)
+                return result, False
 
         def test_crlf(url, max_threads=5):
             found_vulnerabilities = 0
@@ -1911,14 +1940,11 @@ try:
         def display_update_intro():
             panel = Panel(
                 r"""
- 
-░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓███████▓▒░ ░▒▓██████▓▒░▒▓████████▓▒░▒▓████████▓▒░
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░
-░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░ ░▒▓█▓▒░   ░▒▓██████▓▒░
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░
- ░▒▓██████▓▒░░▒▓█▓▒░      ░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓████████▓▒░
+██    ██ ███████ ███████  ███████ ████████ ███████ 
+██    ██ ██   ██ ██    ██ ██   ██    ██    ██      
+██    ██ ███████ ██    ██ ███████    ██    █████   
+██    ██ ██      ██    ██ ██   ██    ██    ██      
+████████ ██      ███████  ██   ██    ██    ███████ 
         """,
                 title="LOXS UPDATER",
                 expand=False,
