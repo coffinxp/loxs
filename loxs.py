@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-VERSION = 'v1.0.2'
+VERSION = 'v1.0.3'
 
 class Color:
     BLUE = '\033[94m'
