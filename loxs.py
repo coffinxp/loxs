@@ -985,7 +985,7 @@ try:
                         total_scanned[0] += 1
                         
                         try:
-                            alert = WebDriverWait(driver, 0.3).until(EC.alert_is_present())
+                            alert = WebDriverWait(driver, 0.5).until(EC.alert_is_present())
                             alert_text = alert.text
 
                             if alert_text:
