@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-VERSION = 'v1.2'
+VERSION = 'v1.2.1'
 
 class Color:
     BLUE = '\033[94m'
@@ -972,20 +972,21 @@ try:
         def return_driver(driver):
             driver_pool.put(driver)
 
-        def check_vulnerability(url, payload, vulnerable_urls, total_scanned):
+        def check_vulnerability(url, payload, vulnerable_urls, total_scanned, timeout, scan_state):
             driver = get_driver()
             try:
                 payload_urls = generate_payload_urls(url, payload)
                 if not payload_urls:
                     return
-                    
+
                 for payload_url in payload_urls:
                     try:
                         driver.get(payload_url)
+                        
                         total_scanned[0] += 1
                         
                         try:
-                            alert = WebDriverWait(driver, 0.5).until(EC.alert_is_present())
+                            alert = WebDriverWait(driver, timeout).until(EC.alert_is_present())
                             alert_text = alert.text
 
                             if alert_text:
@@ -1003,22 +1004,24 @@ try:
 
                         except TimeoutException:
                             print(Fore.RED + f"[✗]{Fore.CYAN} Not Vulnerable:{Fore.RED} {payload_url}")
-            
+
                     except UnexpectedAlertPresentException:
-                        pass 
+                        pass
             finally:
                 return_driver(driver)
 
-        def run_scan(urls, payload_file, concurrency, timeout):
+
+
+        def run_scan(urls, payload_file, timeout, scan_state):
             payloads = load_payloads(payload_file)
             vulnerable_urls = []
             total_scanned = [0]
             
-            for _ in range(min(concurrency, 3)):
+            for _ in range(3):
                 driver_pool.put(create_driver())
-                
+            
             try:
-                with ThreadPoolExecutor(max_workers=concurrency) as executor:
+                with ThreadPoolExecutor(max_workers=2) as executor:
                     futures = []
                     for url in urls:
                         for payload in payloads:
@@ -1028,13 +1031,15 @@ try:
                                     url,
                                     payload,
                                     vulnerable_urls,
-                                    total_scanned
+                                    total_scanned,
+                                    timeout,
+                                    scan_state
                                 )
                             )
                     
                     for future in as_completed(futures):
                         try:
-                            future.result(timeout=timeout)
+                            future.result(timeout)
                         except Exception as e:
                             print(Fore.RED + f"[!] Error during scan: {e}")
                             
@@ -1043,7 +1048,7 @@ try:
                     driver = driver_pool.get()
                     driver.quit()
                     
-            return vulnerable_urls, total_scanned[0]
+                return vulnerable_urls, total_scanned[0]
 
         def print_scan_summary(total_found, total_scanned, start_time):
             summary = [
@@ -1104,6 +1109,8 @@ try:
                     clear_screen()
                     print(Fore.GREEN + "Welcome to the XSS Scanner!\n")
 
+
+
         def prompt_for_valid_file_path(prompt_text):
             while True:
                 file_path = get_file_path(prompt_text).strip()
@@ -1126,61 +1133,57 @@ try:
             time.sleep(0.1)
             clear_screen()
             panel = Panel(r"""
-   _  __________  ____________   _  ___  __________
-  | |/_/ __/ __/ / __/ ___/ _ | / |/ / |/ / __/ _  |
-  >  <_\ \_\ \  _\ \/ /__/ __ |/    /    / _// , _/
-/_/|_/___/___/ /___/\___/_/ |_/_/|_/_/|_/___/_/|_|  
-        """,
-                style="bold green",
-                border_style="blue",
-                expand=False
-            )
+    _  __________  ____________   _  ___  __________
+   | |/_/ __/ __/ / __/ ___/ _ | / |/ / |/ / __/ _  |
+   >  <_\ \_\ \  _\ \/ /__/ __ |/    /    / _// , _/
+  /_/|_/___/___/ /___/\___/_/ |_/_/|_/_/|_/___/_/|_|  
+                """,
+                        style="bold green",
+                        border_style="blue",
+                        expand=False
+                    )
 
             console.print(panel, "\n")
             print(Fore.GREEN + "Welcome to the XSS Testing Tool!\n")
             urls = prompt_for_urls()
 
             payload_file = prompt_for_valid_file_path("[?] Enter the path to the payloads file: ")
-
+            
             try:
-                concurrency_input = input(Fore.CYAN + "\n[?] Enter the number of concurrent threads (1-10, press Enter for 5): ").strip()
-                concurrency = int(concurrency_input) if concurrency_input else 5
-                if not 1 <= concurrency <= 10:
-                    raise ValueError
-            except:
-                concurrency = 5
-                print(Fore.YELLOW + "[i] Invalid input. Using default concurrency level: 5")
+                timeout = float(input(Fore.CYAN + "Enter the timeout duration for each request (Press Enter for 0.5): "))
+            except ValueError:
+                timeout = 0.5
 
-            try:
-                timeout_input = input(Fore.CYAN + "[?] Enter the request timeout in seconds (press Enter for 3): ").strip()
-                timeout = float(timeout_input) if timeout_input else 3.0
-            except:
-                timeout = 3.0
-                print(Fore.YELLOW + "[i] Invalid input. Using default timeout: 3 seconds")
-
-            print(f"\n{Fore.YELLOW}[i] Loading, please wait...")
-            time.sleep(0.1)
             clear_screen()
             print(f"{Fore.CYAN}[i] Starting scan...\n")
 
+            scan_state = {'vulnerability_found': False, 'total_found': 0, 'vulnerable_urls': []}
             all_vulnerable_urls = []
             total_scanned = 0
             start_time = time.time()
 
-            for url in urls:
-                box_content = f" → Scanning URL: {url} "
-                box_width = max(len(box_content) + 2, 40)
-                print(Fore.YELLOW + "\n┌" + "─" * (box_width - 2) + "┐")
-                print(Fore.YELLOW + f"│{box_content.center(box_width - 2)}│")
-                print(Fore.YELLOW + "└" + "─" * (box_width - 2) + "┘\n")
+            try:
+                for url in urls:
+                    box_content = f" → Scanning URL: {url} "
+                    box_width = max(len(box_content) + 2, 40)
+                    print(Fore.YELLOW + "\n┌" + "─" * (box_width - 2) + "┐")
+                    print(Fore.YELLOW + f"│{box_content.center(box_width - 2)}│")
+                    print(Fore.YELLOW + "└" + "─" * (box_width - 2) + "┘\n")
 
-                vulnerable_urls, scanned = run_scan([url], payload_file, concurrency, timeout)
-                all_vulnerable_urls.extend(vulnerable_urls)
-                total_scanned += scanned
+                    vulnerable_urls, scanned = run_scan([url], payload_file, timeout, scan_state)
+                    all_vulnerable_urls.extend(vulnerable_urls)
+                    total_scanned += scanned
 
-            print_scan_summary(len(all_vulnerable_urls), total_scanned, start_time)
-            save_results(all_vulnerable_urls, len(all_vulnerable_urls), total_scanned, start_time)
+            except KeyboardInterrupt:
+                print(Fore.RED + "\n[!] Scan interrupted by the user.")
+                print_scan_summary(scan_state['total_found'], total_scanned, start_time)
+                save_results(scan_state['vulnerable_urls'], scan_state['total_found'], total_scanned, start_time)
+                os._exit(0)
+
+            print_scan_summary(scan_state['total_found'], total_scanned, start_time)
+            save_results(scan_state['vulnerable_urls'], scan_state['total_found'], total_scanned, start_time)
             os._exit(0)
+
 
         if __name__ == "__main__":
             try:
