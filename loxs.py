@@ -934,15 +934,31 @@ try:
         def generate_payload_urls(url, payload):
             url_combinations = []
             scheme, netloc, path, query_string, fragment = urlsplit(url)
+            
+            # Ensure scheme exists (default to 'http')
             if not scheme:
                 scheme = 'http'
+            
+            # Process query parameters
             query_params = parse_qs(query_string, keep_blank_values=True)
-            for key in query_params.keys():
-                modified_params = query_params.copy()
-                modified_params[key] = [payload]
-                modified_query_string = urlencode(modified_params, doseq=True)
-                modified_url = urlunsplit((scheme, netloc, path, modified_query_string, fragment))
+            if query_params:
+                for key in query_params.keys():
+                    modified_params = query_params.copy()
+                    modified_params[key] = [payload]
+                    modified_query_string = urlencode(modified_params, doseq=True)
+                    modified_url = urlunsplit((scheme, netloc, path, modified_query_string, fragment))
+                    url_combinations.append(modified_url)
+            else:
+                # If no query parameters, inject payload into the path
+                injected_path = f"{path.rstrip('/')}/{payload}"
+                modified_url = urlunsplit((scheme, netloc, injected_path, query_string, fragment))
                 url_combinations.append(modified_url)
+                
+                # Optionally append payload to the end of the URL
+                if not path or path == "/":
+                    modified_url = urlunsplit((scheme, netloc, payload, query_string, fragment))
+                    url_combinations.append(modified_url)
+            
             return url_combinations
 
         def create_driver():
