@@ -1,3 +1,21 @@
+Extend functionality to handle URLs without query parameters (like https://example.com/en) Inject payloads into the path or even append payloads to the end of the URL.
+
+Inject Payloads into the Path:
+
+    If the URL has no query parameters, the payload is appended to the path.
+    Example: https://example.com/en/ → https://example.com/en/PAYLOAD
+
+Handle Root URLs:
+
+    For URLs like https://example.com/, the payload is appended directly:
+        https://example.com/ → https://example.com/PAYLOAD
+
+Preserve Existing Behavior:
+
+    Query parameter injection logic remains unchanged.
+
+
+
 <div align="center">
    <a href="https://github.com/coffinxp/loxs"><img src="https://github.com/user-attachments/assets/9fadee1e-a33c-46e3-9eca-c04aa47a443e" hight="225" width="450" align="center"/></a>
 </div>
