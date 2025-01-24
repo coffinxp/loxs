@@ -1,4 +1,4 @@
-Extend functionality to handle URLs without query parameters (like https://example.com/en) Inject payloads into the path or even append payloads to the end of the URL.
+Extend functionality to handle URLs without query parameters (like https://example.com/en/) Inject payloads into the path or even append payloads to the end of the URL.
 
 Inject Payloads into the Path:
 
