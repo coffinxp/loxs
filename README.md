@@ -144,15 +144,20 @@ sudo mv chromedriver /usr/bin
 > [!WARNING]  
 > Loxs is intended for educational and ethical hacking purposes only. It should only be used to test systems you own or have explicit permission to test. Unauthorized use of third-party websites or systems without consent is illegal and unethical.
 
-## [Snake4Readme](https://github.com/PushkraJ99/Snake4Readme)
+<br>
 
 <p align="center">
-<img src="https://github.com/PushkraJ99/Snake4Readme/blob/main/Snake4Readme/grid-snake.svg">
-</p><br>
+<img src="https://github.com/user-attachments/assets/9ec3fed0-45ff-4cb3-988c-f8cd66e85082">
+</p>
 
-[![](https://visitcount.itsvg.in/api?id=PushkraJ99&icon=8&color=12)](https://visitcount.itsvg.in)
 
-<p align="center"> 
-  <b> Visitor Count </b><br>
-  <img src="https://profile-counter.glitch.me/PushkraJ99/count.svg" />
-</p><br>
+<br>
+<br>
+
+<h6 align="center">kindly for hackers</h6>
+
+
+<div align="center">
+  <a href="https://github.com/1hehaq"><img src="https://img.icons8.com/material-outlined/20/808080/github.png" alt="GitHub"></a>
+  <a href="https://twitter.com/1hehaq"><img src="https://img.icons8.com/material-outlined/20/808080/twitter.png" alt="X"></a>
+</div>
