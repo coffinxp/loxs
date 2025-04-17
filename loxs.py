@@ -44,7 +44,13 @@ try:
     from prompt_toolkit.completion import PathCompleter
     from urllib.parse import urlparse
     from concurrent.futures import ThreadPoolExecutor, as_completed
-    from curses import panel
+    if sys.platform == "win32":
+        print("Windows detected: Falling back to alternative input.")
+        # Replace curses with `getch`/`msvcrt` (Windows-only)
+        import msvcrt
+        key = msvcrt.getch()
+    else:
+        from curses import panel
     import random
     import re
     from wsgiref import headers
