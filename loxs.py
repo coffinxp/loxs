@@ -1133,10 +1133,14 @@ try:
                 try:
                     url_input = get_file_path("[?] Enter the path to the input file containing URLs (or press Enter to enter a single URL): ")
                     if url_input:
-                        if not os.path.isfile(url_input):
+                        if url_input.startswith("http"):
+                            print(Fore.GREEN + f"Enter a single url: {url_input}")
+                            return [url_input]
+                        elif not os.path.isfile(url_input):
                             raise FileNotFoundError(f"File not found: {url_input}")
-                        with open(url_input) as file:
-                            urls = [line.strip() for line in file if line.strip()]
+                        else:
+                            with open(url_input) as file:
+                                urls = [line.strip() for line in file if line.strip()]
                         return urls
                     else:
                         single_url = input(Fore.CYAN + "[?] Enter a single URL to scan: ").strip()
