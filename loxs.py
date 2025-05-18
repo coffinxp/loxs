@@ -21,18 +21,13 @@ try:
     import sys
     import requests
     from git import Repo
-    import yaml
-    import shutil
-    from flask import session
     from concurrent.futures import Executor
     import urllib
-    import signal
     import sys
     import threading
     from urllib.parse import urlsplit
     import subprocess
     from urllib.parse import urlunsplit
-    import asyncio
     from selenium.webdriver.chrome.service import Service
     import re
     import urllib.parse
@@ -44,10 +39,8 @@ try:
     from prompt_toolkit.completion import PathCompleter
     from urllib.parse import urlparse
     from concurrent.futures import ThreadPoolExecutor, as_completed
-    from curses import panel
     import random
     import re
-    from wsgiref import headers
     from colorama import Fore, Style, init
     from time import sleep
     from rich import print as rich_print
@@ -61,10 +54,8 @@ try:
     import logging
     from requests.adapters import HTTPAdapter
     from urllib3.util.retry import Retry
-    import argparse
     import concurrent.futures
     import time
-    import aiohttp
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service as ChromeService
     from selenium.webdriver.common.by import By
