@@ -57,6 +57,10 @@
 
 ## Installation
 
+
+> [!Note]
+> Single url input error is fix in this version
+
 ### Clone the repository
 
 ```bash
@@ -141,17 +145,10 @@ sudo mv chromedriver /usr/bin
 ```
 <hr>
 
+
 > [!WARNING]  
 > Loxs is intended for educational and ethical hacking purposes only. It should only be used to test systems you own or have explicit permission to test. Unauthorized use of third-party websites or systems without consent is illegal and unethical.
 
-<br>
-
-<p align="center">
-<img src="https://github.com/user-attachments/assets/9ec3fed0-45ff-4cb3-988c-f8cd66e85082">
-</p>
-
-
-<br>
 
 
 
