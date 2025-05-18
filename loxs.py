@@ -179,13 +179,11 @@ try:
             print(border_color + "│" + option_color + option.ljust(72) + border_color + "│")
         
         print(border_color + "└" + "─" * 72 + "┘")
-        authors = "Created by: Coffinxp, 1hehaq, HexSh1dow, Naho, AnonKryptiQuz, Hghost010"
-        instructions = "Select an option by entering the corresponding number:"
-        
+        authors1 = "Created by: Coffinxp, 1hehaq, HexSh1dow, Naho,"
+        authors2 = "AnonKryptiQuz, Hghost010, Shabari_K_S"
         print(Fore.WHITE + Style.BRIGHT + "─" * 72)
-        print(Fore.WHITE + Style.BRIGHT + authors.center(72))
-        print(Fore.WHITE + Style.BRIGHT + "─" * 72)
-        print(Fore.WHITE + Style.BRIGHT + instructions.center(72))
+        print(Fore.WHITE + Style.BRIGHT + authors1.center(72))
+        print(Fore.WHITE + Style.BRIGHT + authors2.center(72))
         print(Fore.WHITE + Style.BRIGHT + "─" * 72)
 
     def print_exit_menu():
@@ -197,8 +195,6 @@ try:
         |   __ <|  |  |  -__||   __ <|  |  |  -__|
         |______/|___  |_____||______/|___  |_____|
                 |_____|              |_____|      
-        
-  Credit: Coffinxp - 1hehaq - HexSh1dow - AnonKryptiQuz - Naho - Hghost010
             """,
             style="bold green",
             border_style="blue",
@@ -745,10 +741,14 @@ try:
                     try:
                         url_input = get_file_path("[?] Enter the path to the input file containing the URLs (or press Enter to input a single URL): ")
                         if url_input:
-                            if not os.path.isfile(url_input):
+                            if url_input.startswith("http"):
+                                print(Fore.GREEN + f"Enter a single url: {url_input}")
+                                return [url_input]
+                            elif not os.path.isfile(url_input):
                                 raise FileNotFoundError(f"File not found: {url_input}")
-                            with open(url_input) as file:
-                                urls = [line.strip() for line in file if line.strip()]
+                            else:
+                                with open(url_input) as file:
+                                    urls = [line.strip() for line in file if line.strip()]
                             return urls
                         else:
                             single_url = input(f"{Fore.CYAN}[?] Enter a single URL to scan: ").strip()
@@ -1488,11 +1488,14 @@ try:
                         return None
                         
                     if url_input:
-                        if not os.path.isfile(url_input):
-                            print(Fore.RED + f"[!] File not found: {url_input}")
-                            continue
-                        with open(url_input) as file:
-                            urls = [line.strip() for line in file if line.strip()]
+                        if url_input.startswith("http"):
+                            print(Fore.GREEN + f"Enter a single url: {url_input}")
+                            return [url_input]
+                        elif not os.path.isfile(url_input):
+                            raise FileNotFoundError(f"File not found: {url_input}")
+                        else:
+                            with open(url_input) as file:
+                                urls = [line.strip() for line in file if line.strip()]
                         return urls
                     else:
                         single_url = input(Fore.BLUE + "[?] Enter a single URL to scan: ").strip()
@@ -1759,10 +1762,14 @@ try:
                 try:
                     url_input = get_file_path("[?] Enter the path to the input file containing the URLs (or press Enter to input a single URL): ")
                     if url_input:
-                        if not os.path.isfile(url_input):
+                        if url_input.startswith("http"):
+                            print(Fore.GREEN + f"Enter a single url: {url_input}")
+                            return [url_input]
+                        elif not os.path.isfile(url_input):
                             raise FileNotFoundError(f"File not found: {url_input}")
-                        with open(url_input) as file:
-                            urls = [line.strip() for line in file if line.strip()]
+                        else:
+                            with open(url_input) as file:
+                                urls = [line.strip() for line in file if line.strip()]
                         return urls
                     else:
                         single_url = input(Fore.CYAN + "[?] Enter a single URL to scan: ").strip()
@@ -2079,10 +2086,14 @@ try:
                 try:
                     url_input = get_file_path("[?] Enter the path to the input file containing the URLs (or press Enter to input a single URL): ")
                     if url_input:
-                        if not os.path.isfile(url_input):
+                        if url_input.startswith("http"):
+                            print(Fore.GREEN + f"Enter a single url: {url_input}")
+                            return [url_input]
+                        elif not os.path.isfile(url_input):
                             raise FileNotFoundError(f"File not found: {url_input}")
-                        with open(url_input) as file:
-                            urls = [line.strip() for line in file if line.strip()]
+                        else:
+                            with open(url_input) as file:
+                                urls = [line.strip() for line in file if line.strip()]
                         return urls
                     else:
                         single_url = input(f"{Fore.CYAN}[?] Enter a single URL to scan: ").strip()
