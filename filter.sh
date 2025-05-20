@@ -10,8 +10,12 @@ else
     website_url="$website_input"
 fi
 
+# Extract domain name for filename
+domain=$(echo "$website_url" | awk -F/ '{print $3}' | sed 's/^www\.//')
+
 # Inform the user of the normalized URL being used
 echo "Normalized URL being used: $website_url"
+echo "Domain name extracted for filenames: $domain"
 
 # Create an output directory if it doesn't exist
 output_dir="output"
@@ -29,27 +33,27 @@ katana -u "$website_url" -d 5 -f qurl | uro | anew "$output_dir/output.txt"
 
 # XSS
 echo "Filtering URLs for potential XSS endpoints..."
-cat "$output_dir/output.txt" | Gxss | kxss | grep -oP '^URL: \K\S+' | sed 's/=.*/=/' | sort -u > "$output_dir/xss_output.txt"
-echo "Extracting final filtered URLs to $output_dir/xss_output.txt..."
+cat "$output_dir/output.txt" | Gxss | kxss | grep -oP '^URL: \K\S+' | sed 's/=.*/=/' | sort -u > "$output_dir/xss_${domain}.txt"
+echo "Extracting final filtered URLs to $output_dir/xss_${domain}.txt..."
 
 # Open Redirect
 echo "Filtering URLs for potential Open Redirect endpoints..."
-cat "$output_dir/output.txt" | gf or | sed 's/=.*/=/' | sort -u > "$output_dir/open_redirect_output.txt"
+cat "$output_dir/output.txt" | gf or | sed 's/=.*/=/' | sort -u > "$output_dir/open_redirect_${domain}.txt"
 
 # LFI
 echo "Filtering URLs for potential LFI endpoints..."
-cat "$output_dir/output.txt" | gf lfi | sed 's/=.*/=/' | sort -u > "$output_dir/lfi_output.txt"
+cat "$output_dir/output.txt" | gf lfi | sed 's/=.*/=/' | sort -u > "$output_dir/lfi_${domain}.txt"
 
 # SQLi
 echo "Filtering URLs for potential SQLi endpoints..."
-cat "$output_dir/output.txt" | gf sqli | sed 's/=.*/=/' | sort -u > "$output_dir/sqli_output.txt"
+cat "$output_dir/output.txt" | gf sqli | sed 's/=.*/=/' | sort -u > "$output_dir/sqli_${domain}.txt"
 
 # Remove the intermediate file output/output.txt
 rm "$output_dir/output.txt"
 
 # Notify the user that all tasks are complete
 echo "Filtered URLs have been saved to the respective output files in the 'output' directory:"
-echo "  - XSS: $output_dir/xss_output.txt"
-echo "  - Open Redirect: $output_dir/open_redirect_output.txt"
-echo "  - LFI: $output_dir/lfi_output.txt"
-echo "  - SQLi: $output_dir/sqli_output.txt"
+echo "  - XSS: $output_dir/xss_${domain}.txt"
+echo "  - Open Redirect: $output_dir/open_redirect_${domain}.txt"
+echo "  - LFI: $output_dir/lfi_${domain}.txt"
+echo "  - SQLi: $output_dir/sqli_${domain}.txt"
