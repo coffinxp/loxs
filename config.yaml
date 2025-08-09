@@ -1,0 +1,25 @@
+# Loxs Configuration File
+# Customize scanner settings here
+
+# Threading and performance settings
+max_threads: 10
+request_timeout: 10
+retry_attempts: 3
+
+# Directory settings
+default_payloads_dir: "payloads"
+output_dir: "reports"
+
+# Scanning behavior
+follow_redirects: true
+verify_ssl: false
+max_response_size: 1048576  # 1MB
+
+# Advanced settings
+delay_between_requests: 0.1  # seconds
+max_urls_per_scan: 1000
+save_responses: false
+
+# Debug settings
+verbose_logging: false
+debug_mode: false

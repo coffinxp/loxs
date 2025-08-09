@@ -17,69 +17,62 @@ class Color:
     UNITALIC = '\033[23m'
 
 try:
-    import os
-    import sys
-    import requests
-    from git import Repo
-    import yaml
-    import shutil
-    from flask import session
-    from concurrent.futures import Executor
-    import urllib
-    import signal
-    import sys
-    import threading
-    from urllib.parse import urlsplit
-    import subprocess
-    from urllib.parse import urlunsplit
+    # Standard library imports
+    import argparse
     import asyncio
-    from selenium.webdriver.chrome.service import Service
-    import re
-    import urllib.parse
-    import requests
-    import urllib3
-    from requests.adapters import HTTPAdapter
-    from urllib3.util.retry import Retry
-    from prompt_toolkit import prompt
-    from prompt_toolkit.completion import PathCompleter
-    from urllib.parse import urlparse
-    from concurrent.futures import ThreadPoolExecutor, as_completed
-    from curses import panel
+    import concurrent.futures
+    import logging
+    import os
     import random
     import re
-    from wsgiref import headers
-    from colorama import Fore, Style, init
-    from time import sleep
-    from rich import print as rich_print
-    from rich.panel import Panel
-    from rich.table import Table
-    from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, quote
-    from bs4 import BeautifulSoup
-    import urllib3
-    from prompt_toolkit import prompt
-    from prompt_toolkit.completion import PathCompleter
-    import logging
-    from requests.adapters import HTTPAdapter
-    from urllib3.util.retry import Retry
-    import argparse
-    import concurrent.futures
+    import shutil
+    import signal
+    import subprocess
+    import sys
+    import threading
     import time
-    import aiohttp
-    from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service as ChromeService
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    from webdriver_manager.chrome import ChromeDriverManager
-    from urllib.parse import urlsplit, parse_qs, urlencode, urlunsplit
-    from rich.console import Console
-    from selenium.common.exceptions import TimeoutException, UnexpectedAlertPresentException
+    import urllib
+    import urllib.parse
+    import urllib3
+    from concurrent.futures import Executor, ThreadPoolExecutor, as_completed
+    from curses import panel
     from functools import partial
-    from packaging import version
-    from rich.text import Text
     from queue import Queue
     from threading import Lock
+    from time import sleep
+    from urllib.parse import (
+        parse_qs, quote, urlencode, urlparse, urlsplit, 
+        urlunparse, urlunsplit
+    )
+    from wsgiref import headers
+    
+    # Third-party imports
+    import aiohttp
+    import requests
+    import urllib3
+    import yaml
+    from bs4 import BeautifulSoup
+    from colorama import Fore, Style, init
+    from flask import session
+    from git import Repo
+    from packaging import version
+    from prompt_toolkit import prompt
+    from prompt_toolkit.completion import PathCompleter
+    from requests.adapters import HTTPAdapter
+    from rich import print as rich_print
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
+    from rich.text import Text
+    from selenium import webdriver
+    from selenium.common.exceptions import TimeoutException, UnexpectedAlertPresentException
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.chrome.service import Service, Service as ChromeService
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.support.ui import WebDriverWait
+    from urllib3.util.retry import Retry
+    from webdriver_manager.chrome import ChromeDriverManager
 
     USER_AGENTS = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
@@ -139,17 +132,70 @@ try:
     
     init(autoreset=True)
     
+    # Initialize logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('loxs.log'),
+            logging.StreamHandler()
+        ]
+    )
+    logger = logging.getLogger(__name__)
+    
+    class LoxsConfig:
+        """Configuration class for Loxs scanner settings."""
+        
+        def __init__(self):
+            self.max_threads = 10
+            self.request_timeout = 10
+            self.retry_attempts = 3
+            self.default_payloads_dir = "payloads"
+            self.output_dir = "reports"
+            self.user_agents = USER_AGENTS
+            
+        def load_config(self, config_file="config.yaml"):
+            """Load configuration from YAML file if it exists."""
+            try:
+                if os.path.exists(config_file):
+                    with open(config_file, 'r') as f:
+                        config_data = yaml.safe_load(f)
+                        for key, value in config_data.items():
+                            if hasattr(self, key):
+                                setattr(self, key, value)
+                    logger.info(f"Configuration loaded from {config_file}")
+            except Exception as e:
+                logger.warning(f"Could not load config file: {e}")
+    
+    # Global configuration instance
+    config = LoxsConfig()
+    
     def check_and_install_packages(packages):
+        """Check if required packages are installed and install if missing."""
         for package, version in packages.items():
             try:
                 __import__(package)
+                logger.info(f"Package {package} is already installed")
             except ImportError:
-                subprocess.check_call([sys.executable, '-m', 'pip', 'install', f"{package}=={version}"])
+                logger.info(f"Installing missing package: {package}=={version}")
+                try:
+                    subprocess.check_call([sys.executable, '-m', 'pip', 'install', f"{package}=={version}"])
+                    logger.info(f"Successfully installed {package}")
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Failed to install {package}: {e}")
+                    raise
 
     def clear_screen():
-        os.system('cls' if os.name == 'nt' else 'clear')
+        """Clear the terminal screen across different operating systems."""
+        try:
+            os.system('cls' if os.name == 'nt' else 'clear')
+        except Exception as e:
+            logger.warning(f"Could not clear screen: {e}")
+            # Fallback to printing newlines
+            print('\n' * 50)
 
     def display_menu():
+        """Display the main menu interface with available scanning options."""
         title = r"""
      ____           ____  ___                
     |    |    _____ \   \/  /  ______
