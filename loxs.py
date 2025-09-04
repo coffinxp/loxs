@@ -983,6 +983,7 @@ try:
             scheme, netloc, path, query_string, fragment = urlsplit(url)
             if not scheme:
                 scheme = 'http'
+            
             query_params = parse_qs(query_string, keep_blank_values=True)
             for key in query_params.keys():
                 modified_params = query_params.copy()
@@ -990,6 +991,28 @@ try:
                 modified_query_string = urlencode(modified_params, doseq=True)
                 modified_url = urlunsplit((scheme, netloc, path, modified_query_string, fragment))
                 url_combinations.append(modified_url)
+            
+            if fragment:
+                if '=' in fragment:
+                    fragment_params = parse_qs(fragment, keep_blank_values=True)
+                    for key in fragment_params.keys():
+                        modified_fragment_params = fragment_params.copy()
+                        modified_fragment_params[key] = [payload]
+                        modified_fragment_string = urlencode(modified_fragment_params, doseq=True)
+                        modified_url = urlunsplit((scheme, netloc, path, query_string, modified_fragment_string))
+                        url_combinations.append(modified_url)
+                else:
+                    modified_url = urlunsplit((scheme, netloc, path, query_string, payload))
+                    url_combinations.append(modified_url)
+            
+            if not query_params and not fragment:
+                new_query = urlencode({'test': payload})
+                modified_url = urlunsplit((scheme, netloc, path, new_query, fragment))
+                url_combinations.append(modified_url)
+                
+                modified_url_fragment = urlunsplit((scheme, netloc, path, query_string, payload))
+                url_combinations.append(modified_url_fragment)
+            
             return url_combinations
 
         def create_driver():
@@ -997,7 +1020,6 @@ try:
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--no-sandbox")
             chrome_options.add_argument("--disable-dev-shm-usage")
-            chrome_options.add_argument("--disable-gpu")
             chrome_options.add_argument("--disable-extensions")
             chrome_options.add_argument("--disable-browser-side-navigation")
             chrome_options.add_argument("--disable-infobars")
@@ -1056,8 +1078,6 @@ try:
                         pass
             finally:
                 return_driver(driver)
-
-
 
         def run_scan(urls, payload_file, timeout, scan_state):
             payloads = load_payloads(payload_file)
