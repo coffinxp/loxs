@@ -35,6 +35,7 @@ try:
     import asyncio
     from selenium.webdriver.chrome.service import Service
     import re
+    from rich.progress import Progress
     import urllib.parse
     import requests
     import urllib3
@@ -1078,6 +1079,8 @@ try:
                         pass
             finally:
                 return_driver(driver)
+
+
 
         def run_scan(urls, payload_file, timeout, scan_state):
             payloads = load_payloads(payload_file)
@@ -2217,20 +2220,41 @@ try:
 
         def download_update(download_url, file_path):
             try:
-                with progress() as progress:
-                    task = progress.add_task("[cyan]Downloading update...", total=100)
-                    response = requests.get(download_url, stream=True)
+                try:
+                    from rich.progress import Progress
+                    
+                    with Progress() as progress_bar:
+                        task = progress_bar.add_task("Downloading update...", total=100)
+                        response = requests.get(download_url, stream=True)
+                        response.raise_for_status()
+                        
+                        total_size = int(response.headers.get('content-length', 0))
+                        block_size = 1024
+                        downloaded = 0
+                        
+                        with open(file_path, 'wb') as file:
+                            for data in response.iter_content(block_size):
+                                size = file.write(data)
+                                downloaded += size
+                                if total_size > 0:
+                                    progress_percentage = (downloaded / total_size) * 100
+                                    progress_bar.update(task, completed=progress_percentage)
+                                    
+                except ImportError:
+                    console.print("[cyan]Downloading update...[/cyan]")
+                    response = requests.get(download_url)
                     response.raise_for_status()
-                    total_size = int(response.headers.get('content-length', 0))
-                    block_size = 1024
                     with open(file_path, 'wb') as file:
-                        for data in response.iter_content(block_size):
-                            size = file.write(data)
-                            progress.update(task, advance=(size/total_size)*100)
+                        file.write(response.content)
+                        
                 console.print("[green][✓] Update downloaded successfully.[/green]")
                 return True
+                
             except requests.exceptions.RequestException as e:
                 console.print(f"[red][!] Error downloading update: {e}[/red]")
+                return False
+            except Exception as e:
+                console.print(f"[red][!] Unexpected error during download: {e}[/red]")
                 return False
 
         def normalize_version(v):
@@ -2239,7 +2263,7 @@ try:
 
             # Three components (major.minor.patch)
             parts = v.split('.')
-            while len(parts) < 3:
+            while len(parts) < 4:
                 parts.append('0')
             return '.'.join(parts)
 
