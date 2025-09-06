@@ -9,3 +9,4 @@ gitpython
 prompt_toolkit
 pyyaml
 Flask
+Werkzeug==2.2.2
