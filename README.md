@@ -60,7 +60,7 @@
 ### Clone the repository
 
 ```bash
-git clone https://github.com/coffinxp/loxs.git
+git clone --depth=1 https://github.com/coffinxp/loxs.git
 ```
 ```bash
 cd loxs
@@ -152,6 +152,7 @@ sudo mv chromedriver /usr/bin
 
 
 <br>
+
 
 
 
