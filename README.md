@@ -144,6 +144,15 @@ sudo mv chromedriver /usr/bin
 > [!WARNING]  
 > Loxs is intended for educational and ethical hacking purposes only. It should only be used to test systems you own or have explicit permission to test. Unauthorized use of third-party websites or systems without consent is illegal and unethical.
 
+## 📊 Repository Stats
+
+[![License](https://img.shields.io/badge/BSD-3-Clause.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/downloads/)
+![GitHub repo size](https://img.shields.io/github/repo-size/coffinxp/loxs)
+![GitHub last commit](https://img.shields.io/github/last-commit/coffinxp/loxs)
+[![GitHub Stars](https://img.shields.io/github/stars/coffinxp/loxs?style=social)](https://github.com/coffinxp/loxs/stargazers)
+![GitHub issues](https://img.shields.io/github/issues/coffinxp/loxs)
+
 <br>
 
 <p align="center">
@@ -152,6 +161,7 @@ sudo mv chromedriver /usr/bin
 
 
 <br>
+
 
 
 
